@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard — TendRAI</title>
+<link rel="stylesheet" href="/css/style.css">
+<style>
+body { display:flex; min-height:100vh; }
+
+/* Sidebar */
+.sidebar {
+  width: 260px; min-height:100vh; background:rgba(0,0,0,0.3);
+  border-right: 1px solid var(--card-border); padding: 1.5rem 1rem;
+  display:flex; flex-direction:column; position:fixed; left:0; top:0; z-index:100;
+}
+.sidebar-logo { display:flex; align-items:center; gap:0.5rem; padding:0.5rem; margin-bottom:2rem; text-decoration:none; }
+.sidebar-nav { list-style:none; flex:1; }
+.sidebar-nav li { margin-bottom:0.25rem; }
+.sidebar-nav a {
+  display:flex; align-items:center; gap:0.75rem; padding:0.7rem 1rem;
+  color:var(--text-muted); text-decoration:none; border-radius:8px; font-size:0.9rem;
+  transition:all 0.2s;
+}
+.sidebar-nav a:hover, .sidebar-nav a.active { background:rgba(34,211,238,0.08); color:var(--accent); }
+.sidebar-nav a .nav-icon { font-size:1.1rem; width:20px; text-align:center; }
+.sidebar-bottom { padding-top:1rem; border-top:1px solid var(--card-border); }
+
+/* Main */
+.main-content { margin-left:260px; flex:1; padding:2rem; min-height:100vh; }
+.page-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:2rem; }
+.page-title { font-size:1.6rem; font-weight:800; }
+.page-sub { color:var(--text-muted); font-size:0.88rem; margin-top:0.2rem; }
+
+/* Stat cards */
+.stat-cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:1.2rem; margin-bottom:2rem; }
+.stat-card { padding:1.5rem; }
+.stat-card-icon { font-size:1.5rem; margin-bottom:0.75rem; }
+.stat-card-val { font-family:'Syne',sans-serif; font-size:2rem; font-weight:800; }
+.stat-card-label { color:var(--text-muted); font-size:0.82rem; margin-top:0.2rem; }
+.stat-card-change { font-size:0.78rem; margin-top:0.5rem; }
+
+/* Sections */
+.dash-grid { display:grid; grid-template-columns:1.5fr 1fr; gap:1.5rem; }
+.card-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:1.2rem; }
+.card-title { font-size:1rem; font-weight:700; }
+
+/* Tender row */
+.tender-row { display:flex; align-items:center; justify-content:space-between; padding:0.9rem 0; border-bottom:1px solid rgba(255,255,255,0.04); }
+.tender-row:last-child { border:none; }
+.tender-name { font-size:0.88rem; font-weight:600; margin-bottom:0.2rem; }
+.tender-meta { color:var(--text-muted); font-size:0.78rem; }
+
+/* Upload zone */
+.upload-zone {
+  border:2px dashed var(--card-border); border-radius:12px; padding:3rem;
+  text-align:center; cursor:pointer; transition:all 0.3s;
+}
+.upload-zone:hover, .upload-zone.drag-over { border-color:var(--accent); background:rgba(34,211,238,0.03); }
+.upload-icon { font-size:2.5rem; margin-bottom:1rem; }
+.upload-title { font-weight:600; margin-bottom:0.4rem; }
+.upload-sub { color:var(--text-muted); font-size:0.85rem; }
+
+/* Tab nav */
+.tab-nav { display:flex; gap:0.25rem; border-bottom:1px solid var(--card-border); margin-bottom:1.5rem; }
+.tab-btn { padding:0.7rem 1.2rem; background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:0.88rem; font-weight:500; border-bottom:2px solid transparent; transition:all 0.2s; font-family:'DM Sans',sans-serif; }
+.tab-btn.active { color:var(--accent); border-bottom-color:var(--accent); }
+
+/* User info */
+.user-avatar { width:36px; height:36px; border-radius:50%; background:linear-gradient(135deg,var(--accent),var(--secondary)); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:0.85rem; color:white; flex-shrink:0; }
+
+@media(max-width:768px) {
+  .sidebar { display:none; }
+  .main-content { margin-left:0; padding:1rem; }
+  .dash-grid { grid-template-columns:1fr; }
+}
+</style>
+</head>
+<body>
+<!-- Sidebar -->
+<aside class="sidebar">
+  <a href="/" class="sidebar-logo">
+    <div class="brand-logo">T</div>
+    <span class="brand-name">Tend<span>RAI</span></span>
+  </a>
+  <ul class="sidebar-nav">
+    <li><a href="#overview" class="active nav-link" data-tab="overview"><span class="nav-icon">📊</span> Overview</a></li>
+    <li><a href="#upload" class="nav-link" data-tab="upload"><span class="nav-icon">📤</span> Upload Documents</a></li>
+    <li><a href="#tenders" class="nav-link" data-tab="tenders"><span class="nav-icon">📋</span> My Tenders</a></li>
+    <li><a href="#deadlines" class="nav-link" data-tab="deadlines"><span class="nav-icon">⏰</span> Deadline Tracker</a></li>
+    <li><a href="#ai-analysis" class="nav-link" data-tab="ai"><span class="nav-icon">🤖</span> AI Analysis</a></li>
+    <li><a href="#compliance" class="nav-link" data-tab="compliance"><span class="nav-icon">✅</span> Compliance Alerts</a></li>
+    <li><a href="#billing" class="nav-link" data-tab="billing"><span class="nav-icon">💳</span> Subscription</a></li>
+    <li><a href="#settings" class="nav-link" data-tab="settings"><span class="nav-icon">⚙️</span> Settings</a></li>
+  </ul>
+  <div class="sidebar-bottom">
+    <div style="display:flex;align-items:center;gap:0.75rem;padding:0.75rem;border-radius:8px;background:rgba(255,255,255,0.03)">
+      <div class="user-avatar" id="sidebar-avatar">U</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:0.85rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" id="sidebar-name">User</div>
+        <div style="font-size:0.72rem;color:var(--text-muted)" id="sidebar-plan">Free Plan</div>
+      </div>
+      <button onclick="Auth.logout()" style="background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:1rem" title="Logout">→</button>
+    </div>
+  </div>
+</aside>
+
+<!-- Main Content -->
+<main class="main-content">
+  <!-- OVERVIEW TAB -->
+  <div id="tab-overview" class="tab-content">
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">Dashboard</h1>
+        <p class="page-sub" id="welcome-msg">Welcome back!</p>
+      </div>
+      <button class="btn btn-primary" onclick="showTab('tenders');document.getElementById('create-modal').classList.add('active')">
+        + New Tender
+      </button>
+    </div>
+    <div class="stat-cards">
+      <div class="glass-card stat-card">
+        <div class="stat-card-icon">📋</div>
+        <div class="stat-card-val" id="stat-total">0</div>
+        <div class="stat-card-label">Total Tenders</div>
+      </div>
+      <div class="glass-card stat-card">
+        <div class="stat-card-icon">🔄</div>
+        <div class="stat-card-val" id="stat-active" style="color:var(--accent)">0</div>
+        <div class="stat-card-label">Active Tenders</div>
+      </div>
+      <div class="glass-card stat-card">
+        <div class="stat-card-icon">🏆</div>
+        <div class="stat-card-val" id="stat-won" style="color:var(--success)">0</div>
+        <div class="stat-card-label">Won Tenders</div>
+      </div>
+      <div class="glass-card stat-card">
+        <div class="stat-card-icon">📤</div>
+        <div class="stat-card-val" id="stat-submitted" style="color:var(--warning)">0</div>
+        <div class="stat-card-label">Submitted</div>
+      </div>
+    </div>
+    <div class="dash-grid">
+      <div class="glass-card" style="padding:1.5rem">
+        <div class="card-header">
+          <div class="card-title">Recent Tenders</div>
+          <button class="btn btn-sm btn-outline" onclick="showTab('tenders')">View All</button>
+        </div>
+        <div id="recent-tenders-list"><p style="color:var(--text-muted);font-size:0.88rem;text-align:center;padding:2rem">No tenders yet. Create your first tender!</p></div>
+      </div>
+      <div class="glass-card" style="padding:1.5rem">
+        <div class="card-header">
+          <div class="card-title">⏰ Upcoming Deadlines</div>
+        </div>
+        <div id="deadlines-list"><p style="color:var(--text-muted);font-size:0.88rem;text-align:center;padding:2rem">No upcoming deadlines</p></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- UPLOAD TAB -->
+  <div id="tab-upload" class="tab-content" style="display:none">
+    <div class="page-header">
+      <div><h1 class="page-title">Upload Documents</h1><p class="page-sub">Upload PDFs, DOCX, or Excel files for your tenders</p></div>
+    </div>
+    <div class="glass-card" style="padding:2rem;max-width:700px">
+      <div class="form-group">
+        <label class="form-label">Select Tender (Optional)</label>
+        <select id="upload-tender-id" class="form-input">
+          <option value="">-- General Upload --</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Document Type</label>
+        <select id="upload-doc-type" class="form-input">
+          <option value="tender-notice">Tender Notice</option>
+          <option value="bid-document">Bid Document</option>
+          <option value="compliance">Compliance Certificate</option>
+          <option value="certificate">Company Certificate</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+      <div class="upload-zone" id="upload-zone">
+        <div class="upload-icon">📁</div>
+        <div class="upload-title">Drag & drop files here</div>
+        <div class="upload-sub">or click to browse • PDF, DOCX, XLS up to 20MB • Max 20 documents per tender</div>
+        <input type="file" id="file-input" multiple accept=".pdf,.docx,.doc,.xls,.xlsx" style="display:none">
+      </div>
+      <div id="file-preview" style="margin-top:1rem;display:none">
+        <div style="font-size:0.85rem;font-weight:600;margin-bottom:0.5rem">Selected Files:</div>
+        <div id="file-list"></div>
+      </div>
+      <div id="upload-msg" style="display:none;margin-top:1rem"></div>
+      <button class="btn btn-primary" style="margin-top:1rem" id="upload-btn" onclick="uploadFiles()">
+        📤 Upload Documents
+      </button>
+    </div>
+  </div>
+
+  <!-- TENDERS TAB -->
+  <div id="tab-tenders" class="tab-content" style="display:none">
+    <div class="page-header">
+      <div><h1 class="page-title">My Tenders</h1><p class="page-sub">Manage all your tender bids</p></div>
+      <button class="btn btn-primary" onclick="document.getElementById('create-modal').classList.add('active')">+ New Tender</button>
+    </div>
+    <div style="display:flex;gap:1rem;margin-bottom:1.5rem;flex-wrap:wrap">
+      <input type="text" id="tender-search" class="form-input" placeholder="🔍 Search tenders..." style="max-width:280px" oninput="loadTenders()">
+      <select id="tender-status-filter" class="form-input" style="max-width:160px" onchange="loadTenders()">
+        <option value="">All Status</option>
+        <option value="draft">Draft</option>
+        <option value="in-progress">In Progress</option>
+        <option value="submitted">Submitted</option>
+        <option value="won">Won</option>
+        <option value="lost">Lost</option>
+      </select>
+      <select id="tender-cat-filter" class="form-input" style="max-width:160px" onchange="loadTenders()">
+        <option value="">All Categories</option>
+        <option value="construction">Construction</option>
+        <option value="it">IT</option>
+        <option value="supplies">Supplies</option>
+        <option value="services">Services</option>
+        <option value="consulting">Consulting</option>
+      </select>
+    </div>
+    <div class="glass-card">
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Tender Title</th><th>Organization</th><th>Category</th><th>Deadline</th><th>Value</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody id="tenders-table-body"><tr><td colspan="7" style="text-align:center;padding:2rem;color:var(--text-muted)">Loading...</td></tr></tbody>
+        </table>
+      </div>
+      <div id="tenders-pagination" style="padding:1rem;display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--card-border)">
+        <span style="font-size:0.82rem;color:var(--text-muted)" id="tenders-count"></span>
+        <div style="display:flex;gap:0.5rem" id="page-btns"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DEADLINES TAB -->
+  <div id="tab-deadlines" class="tab-content" style="display:none">
+    <div class="page-header"><div><h1 class="page-title">Deadline Tracker</h1><p class="page-sub">Never miss a tender submission deadline</p></div></div>
+    <div id="deadlines-full-list" class="grid-3"></div>
+  </div>
+
+  <!-- AI TAB -->
+  <div id="tab-ai" class="tab-content" style="display:none">
+    <div class="page-header"><div><h1 class="page-title">AI Document Analysis</h1><p class="page-sub">Get AI-powered insights on your tenders</p></div></div>
+    <div class="glass-card" style="padding:2rem;max-width:600px">
+      <div class="form-group">
+        <label class="form-label">Select Tender to Analyze</label>
+        <select id="ai-tender-select" class="form-input"><option value="">-- Select Tender --</option></select>
+      </div>
+      <button class="btn btn-primary" onclick="runAIAnalysis()">🤖 Run AI Analysis</button>
+      <div id="ai-result" style="margin-top:1.5rem;display:none">
+        <div class="glass-card" style="padding:1.5rem;border-color:rgba(34,211,238,0.2)">
+          <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1rem">
+            <span style="font-size:1.5rem">🤖</span>
+            <div>
+              <div style="font-weight:700">AI Analysis Complete</div>
+              <div style="font-size:0.82rem;color:var(--text-muted)">Powered by TendRAI Intelligence</div>
+            </div>
+            <div style="margin-left:auto;text-align:right">
+              <div style="font-size:1.5rem;font-weight:800;color:var(--accent)" id="ai-score">-</div>
+              <div style="font-size:0.72rem;color:var(--text-muted)">Compliance Score</div>
+            </div>
+          </div>
+          <p id="ai-summary" style="color:var(--text-muted);font-size:0.88rem;line-height:1.6;margin-bottom:1rem"></p>
+          <div style="font-weight:600;font-size:0.88rem;margin-bottom:0.5rem">Required Documents:</div>
+          <ul id="ai-requirements" style="list-style:none;color:var(--text-muted);font-size:0.85rem"></ul>
+          <div style="font-weight:600;font-size:0.88rem;margin:1rem 0 0.5rem">Compliance Checklist:</div>
+          <div id="ai-compliance" style="display:flex;flex-direction:column;gap:0.4rem"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- COMPLIANCE TAB -->
+  <div id="tab-compliance" class="tab-content" style="display:none">
+    <div class="page-header"><div><h1 class="page-title">Compliance Alerts</h1><p class="page-sub">Track compliance status across all tenders</p></div></div>
+    <div id="compliance-list" class="grid-3">
+      <div class="glass-card" style="padding:1.5rem;border-color:rgba(245,158,11,0.2)">
+        <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.75rem">
+          <span style="font-size:1.5rem">⚠️</span>
+          <div class="badge badge-warning">Action Required</div>
+        </div>
+        <div style="font-weight:600;margin-bottom:0.3rem">GST Certificate Expiry</div>
+        <div style="font-size:0.82rem;color:var(--text-muted)">Your GST registration certificate expires in 30 days. Renew before submitting new bids.</div>
+      </div>
+      <div class="glass-card" style="padding:1.5rem;border-color:rgba(16,185,129,0.2)">
+        <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.75rem">
+          <span style="font-size:1.5rem">✅</span>
+          <div class="badge badge-success">Up to Date</div>
+        </div>
+        <div style="font-weight:600;margin-bottom:0.3rem">Company Registration</div>
+        <div style="font-size:0.82rem;color:var(--text-muted)">ROC registration is valid and up to date.</div>
+      </div>
+      <div class="glass-card" style="padding:1.5rem;border-color:rgba(99,102,241,0.2)">
+        <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.75rem">
+          <span style="font-size:1.5rem">📋</span>
+          <div class="badge badge-secondary">Recommended</div>
+        </div>
+        <div style="font-weight:600;margin-bottom:0.3rem">ISO Certification</div>
+        <div style="font-size:0.82rem;color:var(--text-muted)">ISO 9001 certification can increase your tender win rate by 40%.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BILLING TAB -->
+  <div id="tab-billing" class="tab-content" style="display:none">
+    <div class="page-header"><div><h1 class="page-title">Subscription & Billing</h1></div></div>
+    <div style="max-width:700px">
+      <div class="glass-card" style="padding:2rem;margin-bottom:1.5rem">
+        <div style="display:flex;align-items:center;justify-content:space-between">
+          <div>
+            <div style="font-size:0.82rem;color:var(--text-muted);margin-bottom:0.3rem">Current Plan</div>
+            <div style="font-size:1.5rem;font-weight:800" id="billing-plan">Free Plan</div>
+          </div>
+          <a href="/pricing" class="btn btn-primary">Upgrade Plan</a>
+        </div>
+        <div style="margin-top:1.5rem;padding-top:1.5rem;border-top:1px solid var(--card-border)">
+          <div style="font-size:0.88rem;color:var(--text-muted)">Plan includes: AI Document Analysis, Deadline Tracker, 5 Active Tenders, Email Support</div>
+        </div>
+      </div>
+      <div id="pricing-plans-billing" class="grid-3"></div>
+    </div>
+  </div>
+
+  <!-- SETTINGS TAB -->
+  <div id="tab-settings" class="tab-content" style="display:none">
+    <div class="page-header"><div><h1 class="page-title">Account Settings</h1></div></div>
+    <div class="glass-card" style="padding:2rem;max-width:500px">
+      <h3 style="font-size:1rem;font-weight:700;margin-bottom:1.5rem">Profile Information</h3>
+      <div id="settings-msg" style="display:none" class="alert"></div>
+      <form id="settings-form">
+        <div class="form-group"><label class="form-label">Full Name</label><input type="text" id="s-name" class="form-input"></div>
+        <div class="form-group"><label class="form-label">Company</label><input type="text" id="s-company" class="form-input"></div>
+        <div class="form-group"><label class="form-label">Phone</label><input type="tel" id="s-phone" class="form-input"></div>
+        <div class="form-group"><label class="form-label">Email (cannot change)</label><input type="email" id="s-email" class="form-input" disabled style="opacity:0.6"></div>
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+      </form>
+    </div>
+  </div>
+</main>
+
+<!-- Create Tender Modal -->
+<div id="create-modal" class="modal-overlay">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Create New Tender</div>
+      <button class="modal-close" onclick="document.getElementById('create-modal').classList.remove('active')">✕</button>
+    </div>
+    <div id="create-tender-msg" style="display:none" class="alert"></div>
+    <form id="create-tender-form">
+      <div class="form-group"><label class="form-label">Tender Title *</label><input type="text" id="t-title" class="form-input" placeholder="NHAI Road Construction Project" required></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+        <div class="form-group"><label class="form-label">Tender Number</label><input type="text" id="t-num" class="form-input" placeholder="TND/2024/001"></div>
+        <div class="form-group"><label class="form-label">Category</label>
+          <select id="t-cat" class="form-input">
+            <option value="construction">Construction</option><option value="it">IT</option>
+            <option value="supplies">Supplies</option><option value="services">Services</option>
+            <option value="consulting">Consulting</option><option value="other">Other</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group"><label class="form-label">Organization</label><input type="text" id="t-org" class="form-input" placeholder="National Highways Authority of India"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+        <div class="form-group"><label class="form-label">Submission Deadline *</label><input type="datetime-local" id="t-deadline" class="form-input" required></div>
+        <div class="form-group"><label class="form-label">Tender Value (₹)</label><input type="number" id="t-value" class="form-input" placeholder="5000000"></div>
+      </div>
+      <div class="form-group"><label class="form-label">Portal</label><input type="text" id="t-portal" class="form-input" placeholder="GeM / CPPP / State Portal"></div>
+      <div class="form-group"><label class="form-label">Notes</label><textarea id="t-notes" class="form-input" rows="2" placeholder="Additional notes..."></textarea></div>
+      <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center" id="create-btn">Create Tender</button>
+    </form>
+  </div>
+</div>
+
+<script src="/js/app.js"></script>
+<script>
+if (!Auth.requireAuth()) { /* redirected */ }
+
+let currentPage = 1;
+const user = Auth.getUser();
+
+// Init
+if (user) {
+  document.getElementById('welcome-msg').textContent = `Welcome back, ${user.name}!`;
+  document.getElementById('sidebar-name').textContent = user.name;
+  document.getElementById('sidebar-plan').textContent = (user.subscription || 'free').charAt(0).toUpperCase() + (user.subscription||'free').slice(1) + ' Plan';
+  document.getElementById('sidebar-avatar').textContent = user.name.charAt(0).toUpperCase();
+  document.getElementById('billing-plan').textContent = (user.subscription||'free').charAt(0).toUpperCase() + (user.subscription||'free').slice(1) + ' Plan';
+}
+
+// Tab navigation
+function showTab(tab) {
+  document.querySelectorAll('.tab-content').forEach(t => t.style.display = 'none');
+  document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+  document.getElementById(`tab-${tab}`).style.display = 'block';
+  document.querySelector(`[data-tab="${tab}"]`)?.classList.add('active');
+  if (tab === 'tenders') loadTenders();
+  if (tab === 'deadlines') loadDeadlines();
+  if (tab === 'ai') loadAITenders();
+  if (tab === 'settings') loadSettings();
+}
+
+document.querySelectorAll('.nav-link').forEach(link => {
+  link.addEventListener('click', e => {
+    e.preventDefault();
+    showTab(link.dataset.tab);
+  });
+});
+
+// Load dashboard
+async function loadDashboard() {
+  try {
+    const data = await API.get('/dashboard');
+    document.getElementById('stat-total').textContent = data.stats.totalTenders;
+    document.getElementById('stat-active').textContent = data.stats.activeTenders;
+    document.getElementById('stat-won').textContent = data.stats.wonTenders;
+    document.getElementById('stat-submitted').textContent = data.stats.submittedTenders;
+
+    const recentList = document.getElementById('recent-tenders-list');
+    if (data.recentTenders.length > 0) {
+      recentList.innerHTML = data.recentTenders.map(t => `
+        <div class="tender-row">
+          <div><div class="tender-name">${t.title}</div><div class="tender-meta">${t.organization || 'No org'} • ${formatDate(t.submissionDeadline)}</div></div>
+          ${statusBadge(t.status)}
+        </div>`).join('');
+    } else {
+      recentList.innerHTML = '<p style="color:var(--text-muted);font-size:0.88rem;text-align:center;padding:2rem">No tenders yet. <a href="#" onclick="document.getElementById(\'create-modal\').classList.add(\'active\')" style="color:var(--accent)">Create your first!</a></p>';
+    }
+
+    const dlList = document.getElementById('deadlines-list');
+    if (data.upcomingDeadlines.length > 0) {
+      dlList.innerHTML = data.upcomingDeadlines.map(t => {
+        const d = daysUntil(t.submissionDeadline);
+        return `<div class="tender-row"><div><div class="tender-name">${t.title}</div><div class="tender-meta">${formatDate(t.submissionDeadline)}</div></div><span class="badge ${d.class}">${d.text}</span></div>`;
+      }).join('');
+    } else {
+      dlList.innerHTML = '<p style="color:var(--text-muted);font-size:0.88rem;text-align:center;padding:2rem">No upcoming deadlines</p>';
+    }
+  } catch(e) { console.error(e); }
+}
+
+// Load tenders
+async function loadTenders(page=1) {
+  currentPage = page;
+  const search = document.getElementById('tender-search')?.value || '';
+  const status = document.getElementById('tender-status-filter')?.value || '';
+  const cat = document.getElementById('tender-cat-filter')?.value || '';
+  const tbody = document.getElementById('tenders-table-body');
+  tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:2rem;color:var(--text-muted)">Loading...</td></tr>';
+  try {
+    const data = await API.get(`/tenders?page=${page}&search=${search}&status=${status}&category=${cat}`);
+    document.getElementById('tenders-count').textContent = `${data.total} tenders found`;
+
+    // Populate upload tender select
+    const sel = document.getElementById('upload-tender-id');
+    const aiSel = document.getElementById('ai-tender-select');
+    if (sel) { sel.innerHTML = '<option value="">-- General Upload --</option>' + data.tenders.map(t => `<option value="${t._id}">${t.title}</option>`).join(''); }
+    if (aiSel) { aiSel.innerHTML = '<option value="">-- Select Tender --</option>' + data.tenders.map(t => `<option value="${t._id}">${t.title}</option>`).join(''); }
+
+    if (data.tenders.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:2rem;color:var(--text-muted)">No tenders found.</td></tr>'; return;
+    }
+    tbody.innerHTML = data.tenders.map(t => {
+      const d = daysUntil(t.submissionDeadline);
+      return `<tr>
+        <td><div style="font-weight:600;font-size:0.88rem">${t.title}</div><div style="font-size:0.75rem;color:var(--text-muted)">${t.tenderNumber || '-'}</div></td>
+        <td style="font-size:0.88rem">${t.organization || '-'}</td>
+        <td><span class="badge badge-secondary" style="font-size:0.72rem">${t.category}</span></td>
+        <td><div style="font-size:0.85rem">${formatDate(t.submissionDeadline)}</div><span class="badge ${d.class}" style="font-size:0.68rem;margin-top:0.2rem">${d.text}</span></td>
+        <td style="font-size:0.88rem">${t.value ? formatCurrency(t.value) : '-'}</td>
+        <td>${statusBadge(t.status)}</td>
+        <td>
+          <div style="display:flex;gap:0.4rem">
+            <button class="btn btn-sm btn-outline" onclick="updateTenderStatus('${t._id}','${t.status}')">Edit</button>
+            <button class="btn btn-sm btn-danger" onclick="deleteTender('${t._id}')">Del</button>
+          </div>
+        </td>
+      </tr>`;
+    }).join('');
+
+    // Pagination
+    const pageBtns = document.getElementById('page-btns');
+    if (pageBtns) {
+      pageBtns.innerHTML = Array.from({length: data.pages}, (_,i) => `<button class="btn btn-sm ${i+1===page?'btn-primary':'btn-outline'}" onclick="loadTenders(${i+1})">${i+1}</button>`).join('');
+    }
+  } catch(e) { tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;color:var(--danger)">${e.message}</td></tr>`; }
+}
+
+// Deadlines
+async function loadDeadlines() {
+  try {
+    const data = await API.get('/tenders?status=draft&page=1&limit=50');
+    const data2 = await API.get('/tenders?status=in-progress&page=1&limit=50');
+    const all = [...data.tenders, ...data2.tenders].sort((a,b) => new Date(a.submissionDeadline) - new Date(b.submissionDeadline));
+    const container = document.getElementById('deadlines-full-list');
+    if (all.length === 0) { container.innerHTML = '<p style="color:var(--text-muted)">No active tenders with upcoming deadlines.</p>'; return; }
+    container.innerHTML = all.map(t => {
+      const d = daysUntil(t.submissionDeadline);
+      return `<div class="glass-card" style="padding:1.5rem">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:0.75rem">
+          <span class="badge ${d.class}">${d.text}</span>
+          ${statusBadge(t.status)}
+        </div>
+        <div style="font-weight:700;margin-bottom:0.3rem">${t.title}</div>
+        <div style="font-size:0.82rem;color:var(--text-muted);margin-bottom:0.5rem">${t.organization || 'Unknown org'}</div>
+        <div style="font-size:0.85rem;color:var(--accent)">📅 ${formatDate(t.submissionDeadline)}</div>
+      </div>`;
+    }).join('');
+  } catch(e) {}
+}
+
+// AI Analysis
+async function loadAITenders() {
+  try {
+    const data = await API.get('/tenders?page=1&limit=50');
+    const sel = document.getElementById('ai-tender-select');
+    sel.innerHTML = '<option value="">-- Select Tender --</option>' + data.tenders.map(t => `<option value="${t._id}">${t.title}</option>`).join('');
+  } catch(e) {}
+}
+
+async function runAIAnalysis() {
+  const tenderId = document.getElementById('ai-tender-select').value;
+  if (!tenderId) { showToast('Please select a tender first', 'error'); return; }
+  showToast('Running AI analysis...', 'info');
+  try {
+    const data = await API.post(`/ai-analyze/${tenderId}`, {});
+    const res = document.getElementById('ai-result');
+    document.getElementById('ai-score').textContent = data.analysis.score + '%';
+    document.getElementById('ai-summary').textContent = data.analysis.summary;
+    document.getElementById('ai-requirements').innerHTML = data.analysis.requirements.map(r => `<li style="padding:0.3rem 0;border-bottom:1px solid rgba(255,255,255,0.04)">• ${r}</li>`).join('');
+    document.getElementById('ai-compliance').innerHTML = data.analysis.compliance.map(c =>
+      `<div style="display:flex;align-items:center;gap:0.5rem;font-size:0.85rem"><span>${c.status==='required'?'⚠️':'💡'}</span><span>${c.item}</span><span class="badge ${c.status==='required'?'badge-warning':'badge-secondary'}" style="margin-left:auto;font-size:0.7rem">${c.status}</span></div>`
+    ).join('');
+    res.style.display = 'block';
+    showToast('AI Analysis complete!', 'success');
+  } catch(e) { showToast(e.message, 'error'); }
+}
+
+// Create Tender
+document.getElementById('create-tender-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const btn = document.getElementById('create-btn');
+  btn.textContent = 'Creating...'; btn.disabled = true;
+  try {
+    await API.post('/create-tender', {
+      title: document.getElementById('t-title').value,
+      tenderNumber: document.getElementById('t-num').value,
+      organization: document.getElementById('t-org').value,
+      portal: document.getElementById('t-portal').value,
+      category: document.getElementById('t-cat').value,
+      value: document.getElementById('t-value').value,
+      submissionDeadline: document.getElementById('t-deadline').value,
+      notes: document.getElementById('t-notes').value
+    });
+    document.getElementById('create-modal').classList.remove('active');
+    document.getElementById('create-tender-form').reset();
+    showToast('Tender created successfully!', 'success');
+    loadDashboard(); loadTenders();
+  } catch(e) {
+    const msg = document.getElementById('create-tender-msg');
+    msg.textContent = e.message; msg.className = 'alert alert-error'; msg.style.display = 'block';
+  }
+  btn.textContent = 'Create Tender'; btn.disabled = false;
+});
+
+// Update tender status
+async function updateTenderStatus(id, current) {
+  const statuses = ['draft','in-progress','submitted','won','lost','cancelled'];
+  const next = prompt(`Update status (${statuses.join(', ')}):`, current);
+  if (!next || !statuses.includes(next)) return;
+  try {
+    await API.put(`/tenders/${id}`, { status: next });
+    showToast('Status updated!', 'success');
+    loadTenders(currentPage);
+  } catch(e) { showToast(e.message, 'error'); }
+}
+
+async function deleteTender(id) {
+  if (!confirm('Delete this tender? This cannot be undone.')) return;
+  try {
+    await API.delete(`/tenders/${id}`);
+    showToast('Tender deleted', 'success');
+    loadTenders(currentPage); loadDashboard();
+  } catch(e) { showToast(e.message, 'error'); }
+}
+
+// Upload files
+const zone = document.getElementById('upload-zone');
+const fileInput = document.getElementById('file-input');
+if (zone) {
+  zone.addEventListener('click', () => fileInput.click());
+  zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('drag-over'); });
+  zone.addEventListener('dragleave', () => zone.classList.remove('drag-over'));
+  zone.addEventListener('drop', e => { e.preventDefault(); zone.classList.remove('drag-over'); fileInput.files = e.dataTransfer.files; showFiles(); });
+  fileInput.addEventListener('change', showFiles);
+}
+function showFiles() {
+  const files = fileInput.files;
+  if (!files.length) return;
+  document.getElementById('file-preview').style.display = 'block';
+  document.getElementById('file-list').innerHTML = Array.from(files).map(f =>
+    `<div style="display:flex;align-items:center;gap:0.5rem;padding:0.4rem;background:rgba(255,255,255,0.03);border-radius:6px;margin-bottom:0.3rem;font-size:0.82rem">📄 ${f.name} <span style="color:var(--text-muted);margin-left:auto">${(f.size/1024).toFixed(1)} KB</span></div>`
+  ).join('');
+}
+async function uploadFiles() {
+  const files = fileInput.files;
+  if (!files.length) { showToast('Please select files first', 'error'); return; }
+  const btn = document.getElementById('upload-btn');
+  btn.textContent = 'Uploading...'; btn.disabled = true;
+  const formData = new FormData();
+  Array.from(files).forEach(f => formData.append('documents', f));
+  formData.append('tenderId', document.getElementById('upload-tender-id').value);
+  formData.append('documentType', document.getElementById('upload-doc-type').value);
+  try {
+    const data = await API.upload('/upload', formData);
+    showToast(data.message, 'success');
+    fileInput.value = ''; document.getElementById('file-preview').style.display = 'none';
+  } catch(e) { showToast(e.message, 'error'); }
+  btn.textContent = '📤 Upload Documents'; btn.disabled = false;
+}
+
+// Settings
+async function loadSettings() {
+  try {
+    const data = await API.get('/profile');
+    const u = data.user;
+    document.getElementById('s-name').value = u.name || '';
+    document.getElementById('s-company').value = u.company || '';
+    document.getElementById('s-phone').value = u.phone || '';
+    document.getElementById('s-email').value = u.email || '';
+  } catch(e) {}
+}
+
+document.getElementById('settings-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const msg = document.getElementById('settings-msg');
+  try {
+    await API.put('/profile', { name: document.getElementById('s-name').value, company: document.getElementById('s-company').value, phone: document.getElementById('s-phone').value });
+    msg.textContent = 'Profile updated successfully!'; msg.className = 'alert alert-success'; msg.style.display = 'block';
+    setTimeout(() => msg.style.display = 'none', 3000);
+  } catch(e) { msg.textContent = e.message; msg.className = 'alert alert-error'; msg.style.display = 'block'; }
+});
+
+// Init
+loadDashboard();
+</script>
+</body>
+</html>

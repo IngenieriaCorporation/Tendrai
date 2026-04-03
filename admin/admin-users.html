@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Users — TendRAI Admin</title>
+<link rel="stylesheet" href="/css/style.css">
+<link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+<div class="admin-layout">
+<aside class="admin-sidebar">
+  <div class="admin-sidebar-logo">
+    <div style="display:flex;align-items:center;gap:0.5rem"><div class="brand-logo" style="width:30px;height:30px;font-size:0.9rem">T</div><span class="brand-name" style="font-size:1.1rem">Tend<span>RAI</span></span></div>
+    <div class="admin-logo-badge">ADMIN PANEL</div>
+  </div>
+  <ul class="admin-nav">
+    <li><a href="/admin"><span class="a-icon">📊</span>Dashboard</a></li>
+    <li><a href="/admin/users" class="active"><span class="a-icon">👥</span>Users</a></li>
+    <li><a href="/admin/tenders"><span class="a-icon">📋</span>Tenders</a></li>
+    <li><a href="/admin/pricing"><span class="a-icon">💰</span>Pricing</a></li>
+    <li><a href="/admin/content"><span class="a-icon">📝</span>Content</a></li>
+    <li style="margin-top:1rem;padding-top:1rem;border-top:1px solid var(--card-border)"><a href="/"><span class="a-icon">🌐</span>View Website</a></li>
+    <li><a href="#" onclick="AdminAuth.logout()"><span class="a-icon">→</span>Logout</a></li>
+  </ul>
+</aside>
+
+<main class="admin-main">
+  <div class="admin-header">
+    <div><div class="admin-title">User Management</div><div style="font-size:0.82rem;color:var(--text-muted)">View, manage and update user accounts</div></div>
+  </div>
+
+  <!-- Filters -->
+  <div style="display:flex;gap:1rem;margin-bottom:1.5rem;flex-wrap:wrap">
+    <input type="text" id="user-search" class="form-input" placeholder="🔍 Search by name or email..." style="max-width:300px" oninput="loadUsers()">
+    <select id="sub-filter" class="form-input" style="max-width:160px" onchange="loadUsers()">
+      <option value="">All Plans</option>
+      <option value="free">Free</option>
+      <option value="starter">Starter</option>
+      <option value="professional">Professional</option>
+      <option value="enterprise">Enterprise</option>
+    </select>
+  </div>
+
+  <div class="glass-card">
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr><th>User</th><th>Company</th><th>Plan</th><th>Joined</th><th>Status</th><th>Actions</th></tr>
+        </thead>
+        <tbody id="users-tbody"><tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--text-muted)">Loading users...</td></tr></tbody>
+      </table>
+    </div>
+    <div style="padding:1rem;display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--card-border)">
+      <span style="font-size:0.82rem;color:var(--text-muted)" id="users-count"></span>
+      <div id="users-page-btns" style="display:flex;gap:0.5rem"></div>
+    </div>
+  </div>
+</main>
+</div>
+
+<!-- Edit User Modal -->
+<div id="edit-user-modal" class="modal-overlay">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Edit User</div>
+      <button class="modal-close" onclick="document.getElementById('edit-user-modal').classList.remove('active')">✕</button>
+    </div>
+    <div id="edit-user-msg" style="display:none" class="alert"></div>
+    <form id="edit-user-form">
+      <input type="hidden" id="edit-user-id">
+      <div class="form-group"><label class="form-label">Subscription Plan</label>
+        <select id="edit-sub" class="form-input">
+          <option value="free">Free</option><option value="starter">Starter</option>
+          <option value="professional">Professional</option><option value="enterprise">Enterprise</option>
+        </select>
+      </div>
+      <div class="form-group"><label class="form-label">Subscription Expiry</label><input type="date" id="edit-expiry" class="form-input"></div>
+      <div class="form-group"><label class="form-label">Account Status</label>
+        <select id="edit-status" class="form-input">
+          <option value="true">Active</option><option value="false">Deactivated</option>
+        </select>
+      </div>
+      <div style="display:flex;gap:0.75rem">
+        <button type="submit" class="btn btn-primary" style="flex:1;justify-content:center">Save Changes</button>
+        <button type="button" class="btn btn-outline" onclick="document.getElementById('edit-user-modal').classList.remove('active')">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script src="/js/app.js"></script>
+<script>
+if (!AdminAuth.isLoggedIn()) window.location.href = '/admin/login';
+
+async function loadUsers(page=1) {
+  const search = document.getElementById('user-search').value;
+  const sub = document.getElementById('sub-filter').value;
+  try {
+    const data = await AdminAuth.get(`/admin/users?search=${search}&subscription=${sub}&page=${page}&limit=15`);
+    document.getElementById('users-count').textContent = `${data.total} users total`;
+    const tbody = document.getElementById('users-tbody');
+    tbody.innerHTML = data.users.map(u => `
+      <tr>
+        <td>
+          <div style="display:flex;align-items:center;gap:0.6rem">
+            <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--secondary));display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700;color:white;flex-shrink:0">${u.name.charAt(0)}</div>
+            <div><div style="font-size:0.85rem;font-weight:600">${u.name}</div><div style="font-size:0.72rem;color:var(--text-muted)">${u.email}</div></div>
+          </div>
+        </td>
+        <td style="font-size:0.85rem">${u.company || '-'}</td>
+        <td><span class="badge ${u.subscription==='professional'?'badge-accent':u.subscription==='enterprise'?'badge-warning':'badge-secondary'}" style="font-size:0.72rem;text-transform:capitalize">${u.subscription}</span></td>
+        <td style="font-size:0.82rem;color:var(--text-muted)">${formatDate(u.createdAt)}</td>
+        <td><span class="badge ${u.isActive?'badge-success':'badge-danger'}">${u.isActive?'Active':'Inactive'}</span></td>
+        <td>
+          <div style="display:flex;gap:0.4rem">
+            <button class="btn btn-sm btn-outline" onclick="openEditUser('${u._id}','${u.subscription}','${u.isActive}')">Edit</button>
+            <button class="btn btn-sm btn-danger" onclick="deleteUser('${u._id}','${u.name}')">Del</button>
+          </div>
+        </td>
+      </tr>`).join('') || '<tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--text-muted)">No users found</td></tr>';
+
+    const pageBtns = document.getElementById('users-page-btns');
+    pageBtns.innerHTML = Array.from({length:data.pages},(_,i)=>`<button class="btn btn-sm ${i+1===page?'btn-primary':'btn-outline'}" onclick="loadUsers(${i+1})">${i+1}</button>`).join('');
+  } catch(e) { showToast(e.message, 'error'); }
+}
+
+function openEditUser(id, sub, status) {
+  document.getElementById('edit-user-id').value = id;
+  document.getElementById('edit-sub').value = sub;
+  document.getElementById('edit-status').value = status;
+  document.getElementById('edit-user-modal').classList.add('active');
+}
+
+document.getElementById('edit-user-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const id = document.getElementById('edit-user-id').value;
+  const msg = document.getElementById('edit-user-msg');
+  try {
+    await AdminAuth.put(`/admin/users/${id}`, {
+      subscription: document.getElementById('edit-sub').value,
+      isActive: document.getElementById('edit-status').value === 'true',
+      subscriptionExpiry: document.getElementById('edit-expiry').value || null
+    });
+    document.getElementById('edit-user-modal').classList.remove('active');
+    showToast('User updated successfully!', 'success');
+    loadUsers();
+  } catch(e) { msg.textContent = e.message; msg.className='alert alert-error'; msg.style.display='block'; }
+});
+
+async function deleteUser(id, name) {
+  if (!confirm(`Delete user "${name}"? This cannot be undone.`)) return;
+  try {
+    await AdminAuth.delete(`/admin/users/${id}`);
+    showToast('User deleted', 'success');
+    loadUsers();
+  } catch(e) { showToast(e.message, 'error'); }
+}
+
+loadUsers();
+</script>
+</body>
+</html>

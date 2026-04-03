@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TendRAI — AI Powered Tender Filing & Bid Management Platform</title>
+<meta name="description" content="Win more government tenders with AI. Upload documents, track deadlines, and manage bids faster with TendRAI automation.">
+<link rel="stylesheet" href="/css/style.css">
+<style>
+/* Hero */
+.hero {
+  min-height: 100vh; display: flex; align-items: center;
+  position: relative; overflow: hidden; padding-top: 80px;
+  background: radial-gradient(ellipse at 20% 50%, rgba(34,211,238,0.06) 0%, transparent 50%),
+              radial-gradient(ellipse at 80% 20%, rgba(99,102,241,0.08) 0%, transparent 50%);
+}
+.hero-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; }
+.hero-eyebrow { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1.5rem; }
+.hero-dot { width: 8px; height: 8px; background: var(--accent); border-radius: 50%; animation: pulse 2s infinite; }
+.hero-title { font-size: clamp(2.5rem, 5vw, 4.5rem); font-weight: 800; line-height: 1.1; margin-bottom: 1.5rem; }
+.hero-subtitle { color: var(--text-muted); font-size: 1.15rem; line-height: 1.7; margin-bottom: 2.5rem; max-width: 480px; }
+.hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 3rem; }
+.hero-trust { display: flex; align-items: center; gap: 1rem; }
+.hero-trust-text { color: var(--text-muted); font-size: 0.85rem; }
+.hero-avatars { display: flex; }
+.hero-avatars span { width: 32px; height: 32px; border-radius: 50%; border: 2px solid var(--primary); background: linear-gradient(135deg, var(--accent), var(--secondary)); display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 700; color: white; margin-left: -8px; }
+.hero-avatars span:first-child { margin-left: 0; }
+
+/* Dashboard mockup */
+.hero-visual { position: relative; }
+.dashboard-mockup {
+  background: rgba(30,41,59,0.9); border: 1px solid var(--card-border);
+  border-radius: 16px; padding: 1.5rem; animation: float 4s ease-in-out infinite;
+  box-shadow: 0 30px 80px rgba(0,0,0,0.4);
+}
+.mock-header { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1.5rem; }
+.mock-dot { width: 10px; height: 10px; border-radius: 50%; }
+.mock-stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; margin-bottom: 1rem; }
+.mock-stat { background: rgba(255,255,255,0.04); border-radius: 10px; padding: 0.75rem; }
+.mock-stat-val { font-family: 'Syne', sans-serif; font-size: 1.4rem; font-weight: 800; }
+.mock-stat-label { font-size: 0.7rem; color: var(--text-muted); margin-top: 0.2rem; }
+.mock-bar { height: 6px; background: rgba(255,255,255,0.06); border-radius: 3px; margin-bottom: 0.5rem; overflow: hidden; }
+.mock-bar-fill { height: 100%; border-radius: 3px; background: linear-gradient(90deg, var(--accent), var(--secondary)); }
+.mock-tender-row { display: flex; align-items: center; justify-content: space-between; padding: 0.6rem 0; border-bottom: 1px solid rgba(255,255,255,0.04); }
+.mock-tender-name { font-size: 0.78rem; font-weight: 500; }
+.mock-badge { font-size: 0.68rem; padding: 0.2rem 0.5rem; border-radius: 4px; }
+
+/* Features */
+.feature-card { padding: 2rem; position: relative; overflow: hidden; }
+.feature-icon { width: 52px; height: 52px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin-bottom: 1.2rem; background: rgba(34,211,238,0.1); }
+.feature-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.6rem; }
+.feature-desc { color: var(--text-muted); font-size: 0.88rem; line-height: 1.6; }
+
+/* How it works */
+.steps-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0; position: relative; }
+.step-card { text-align: center; padding: 2rem; position: relative; }
+.step-num { width: 52px; height: 52px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--secondary)); display: flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.2rem; margin: 0 auto 1.2rem; }
+.step-title { font-weight: 700; margin-bottom: 0.5rem; }
+.step-desc { color: var(--text-muted); font-size: 0.88rem; line-height: 1.5; }
+.step-connector { position: absolute; top: 26px; left: 60%; width: 80%; height: 2px; background: linear-gradient(90deg, var(--accent), var(--secondary)); opacity: 0.3; }
+
+/* Pricing */
+.pricing-card { padding: 2rem; position: relative; overflow: hidden; }
+.pricing-card.highlighted { border-color: var(--accent); background: rgba(34,211,238,0.04); }
+.pricing-card.highlighted::before { content: 'MOST POPULAR'; position: absolute; top: 1rem; right: 1rem; font-size: 0.68rem; font-weight: 700; color: var(--accent); background: rgba(34,211,238,0.1); padding: 0.25rem 0.6rem; border-radius: 4px; }
+.price-amount { font-family: 'Syne', sans-serif; font-size: 2.8rem; font-weight: 800; line-height: 1; }
+.price-period { color: var(--text-muted); font-size: 0.88rem; margin-left: 0.3rem; }
+.price-features { list-style: none; margin: 1.5rem 0; }
+.price-features li { display: flex; align-items: center; gap: 0.6rem; padding: 0.4rem 0; font-size: 0.9rem; border-bottom: 1px solid rgba(255,255,255,0.04); }
+.price-features li::before { content: '✓'; color: var(--accent); font-weight: 700; }
+
+/* Testimonials */
+.testimonial-card { padding: 2rem; }
+.testimonial-text { color: var(--text-muted); line-height: 1.7; margin-bottom: 1.5rem; font-style: italic; }
+.testimonial-author { display: flex; align-items: center; gap: 0.75rem; }
+.testimonial-avatar { width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--secondary)); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.9rem; color: white; }
+.testimonial-name { font-weight: 600; font-size: 0.9rem; }
+.testimonial-company { color: var(--text-muted); font-size: 0.8rem; }
+
+/* FAQ */
+.faq-item { border: 1px solid var(--card-border); border-radius: 12px; margin-bottom: 0.75rem; overflow: hidden; }
+.faq-question { padding: 1.2rem 1.5rem; font-weight: 600; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: background 0.2s; }
+.faq-question:hover { background: rgba(255,255,255,0.02); }
+.faq-toggle { color: var(--accent); font-size: 1.2rem; transition: transform 0.3s; }
+.faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.3s ease, padding 0.3s; color: var(--text-muted); line-height: 1.7; font-size: 0.9rem; }
+.faq-item.open .faq-answer { max-height: 200px; padding: 0 1.5rem 1.2rem; }
+.faq-item.open .faq-toggle { transform: rotate(45deg); }
+
+/* Stats bar */
+.stats-bar { background: rgba(34,211,238,0.03); border: 1px solid rgba(34,211,238,0.1); border-radius: 16px; padding: 3rem 2rem; display: grid; grid-template-columns: repeat(4, 1fr); text-align: center; gap: 2rem; }
+.stat-val { font-family: 'Syne', sans-serif; font-size: 2.2rem; font-weight: 800; color: var(--accent); }
+.stat-label { color: var(--text-muted); font-size: 0.88rem; margin-top: 0.3rem; }
+
+/* CTA */
+.cta-section { text-align: center; padding: 6rem 2rem; background: radial-gradient(ellipse at center, rgba(99,102,241,0.1) 0%, transparent 70%); }
+
+/* BG grid */
+.bg-grid { position: absolute; inset: 0; background-image: linear-gradient(rgba(34,211,238,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(34,211,238,0.03) 1px, transparent 1px); background-size: 50px 50px; pointer-events: none; }
+
+@media(max-width:768px) {
+  .hero-grid { grid-template-columns: 1fr; }
+  .hero-visual { display: none; }
+  .stats-bar { grid-template-columns: repeat(2,1fr); }
+}
+</style>
+</head>
+<body>
+
+<div id="page-loader" class="loader-overlay">
+  <div class="loader-spinner"></div>
+  <p style="color:var(--text-muted);font-size:0.9rem;">Loading TendRAI...</p>
+</div>
+
+<!-- Navbar -->
+<nav class="navbar" id="navbar">
+  <a href="/" class="navbar-brand">
+    <div class="brand-logo">T</div>
+    <span class="brand-name">Tend<span>RAI</span></span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="/features">Features</a></li>
+    <li><a href="/pricing">Pricing</a></li>
+    <li><a href="/how-it-works">How It Works</a></li>
+    <li><a href="/industries">Industries</a></li>
+    <li><a href="/blog">Resources</a></li>
+    <li><a href="/about">About</a></li>
+  </ul>
+  <div class="nav-cta">
+    <a href="/login" class="btn btn-ghost">Login</a>
+    <a href="/register" class="btn btn-primary">Start Free Trial</a>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="bg-grid"></div>
+  <div class="container" style="position:relative;z-index:1;">
+    <div class="hero-grid">
+      <div>
+        <div class="hero-eyebrow">
+          <div class="hero-dot"></div>
+          <span class="badge badge-accent">AI-Powered Platform</span>
+        </div>
+        <h1 class="hero-title animate-fade-up">
+          Win More<br>
+          <span class="gradient-text">Government Tenders</span><br>
+          with AI
+        </h1>
+        <p class="hero-subtitle animate-fade-up" style="animation-delay:0.1s">
+          Upload documents, track deadlines, and manage bids faster with TendRAI's intelligent automation built for Indian contractors & MSMEs.
+        </p>
+        <div class="hero-actions animate-fade-up" style="animation-delay:0.2s">
+          <a href="/register" class="btn btn-primary btn-lg">
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+            Start Free Trial
+          </a>
+          <a href="#demo" class="btn btn-outline btn-lg">
+            <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
+            Watch Demo
+          </a>
+        </div>
+        <div class="hero-trust animate-fade-up" style="animation-delay:0.3s">
+          <div class="hero-avatars">
+            <span>RK</span><span>PS</span><span>AP</span><span>MG</span><span>+</span>
+          </div>
+          <span class="hero-trust-text">500+ contractors already winning more tenders</span>
+        </div>
+      </div>
+
+      <!-- Dashboard Mockup -->
+      <div class="hero-visual animate-fade-in" style="animation-delay:0.4s">
+        <div class="dashboard-mockup">
+          <div class="mock-header">
+            <div class="mock-dot" style="background:#ef4444"></div>
+            <div class="mock-dot" style="background:#f59e0b"></div>
+            <div class="mock-dot" style="background:#10b981"></div>
+            <span style="color:var(--text-muted);font-size:0.75rem;margin-left:0.5rem;">TendRAI Dashboard</span>
+          </div>
+          <div class="mock-stat-grid">
+            <div class="mock-stat">
+              <div class="mock-stat-val" style="color:var(--accent)">12</div>
+              <div class="mock-stat-label">Active Tenders</div>
+            </div>
+            <div class="mock-stat">
+              <div class="mock-stat-val" style="color:var(--success)">4</div>
+              <div class="mock-stat-label">Won This Month</div>
+            </div>
+            <div class="mock-stat">
+              <div class="mock-stat-val" style="color:var(--warning)">3</div>
+              <div class="mock-stat-label">Deadlines Soon</div>
+            </div>
+          </div>
+          <div style="margin-bottom:1rem">
+            <div style="display:flex;justify-content:space-between;font-size:0.75rem;margin-bottom:0.4rem;color:var(--text-muted)">
+              <span>Bid Success Rate</span><span style="color:var(--accent)">73%</span>
+            </div>
+            <div class="mock-bar"><div class="mock-bar-fill" style="width:73%"></div></div>
+          </div>
+          <div class="mock-tender-row">
+            <span class="mock-tender-name">NHAI Road Project #A24</span>
+            <span class="mock-badge" style="background:rgba(34,211,238,0.1);color:var(--accent)">In Progress</span>
+          </div>
+          <div class="mock-tender-row">
+            <span class="mock-tender-name">Railway Station Renovation</span>
+            <span class="mock-badge" style="background:rgba(245,158,11,0.1);color:var(--warning)">3 days left</span>
+          </div>
+          <div class="mock-tender-row" style="border:none">
+            <span class="mock-tender-name">Smart City IT Infrastructure</span>
+            <span class="mock-badge" style="background:rgba(16,185,129,0.1);color:var(--success)">Submitted</span>
+          </div>
+          <div style="margin-top:1rem;padding:0.75rem;background:rgba(34,211,238,0.06);border:1px solid rgba(34,211,238,0.15);border-radius:8px">
+            <div style="font-size:0.72rem;color:var(--accent);font-weight:600;margin-bottom:0.3rem">🤖 AI Analysis Complete</div>
+            <div style="font-size:0.72rem;color:var(--text-muted)">Compliance score: 94% • 2 documents missing</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Stats -->
+<section class="section" style="padding-top:2rem;padding-bottom:4rem">
+  <div class="container">
+    <div class="stats-bar animate-on-scroll">
+      <div><div class="stat-val">₹2,400 Cr+</div><div class="stat-label">Tender Value Managed</div></div>
+      <div><div class="stat-val">500+</div><div class="stat-label">Active Contractors</div></div>
+      <div><div class="stat-val">73%</div><div class="stat-label">Average Win Rate</div></div>
+      <div><div class="stat-val">50+</div><div class="stat-label">Government Portals</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- Features -->
+<section class="section" id="features">
+  <div class="container">
+    <div class="section-header animate-on-scroll">
+      <div class="badge badge-secondary" style="margin-bottom:1rem">Platform Features</div>
+      <h2 class="section-title">Everything to Win <span class="gradient-text">More Tenders</span></h2>
+      <p class="section-sub">From AI document analysis to deadline tracking — TendRAI has all the tools serious contractors need.</p>
+    </div>
+    <div class="grid-4">
+      <div class="glass-card feature-card animate-on-scroll">
+        <div class="feature-icon">🤖</div>
+        <div class="feature-title">AI Document Analysis</div>
+        <div class="feature-desc">Instantly analyze tender documents. AI extracts requirements, eligibility criteria, and compliance needs.</div>
+      </div>
+      <div class="glass-card feature-card animate-on-scroll">
+        <div class="feature-icon">📝</div>
+        <div class="feature-title">Bid Preparation Automation</div>
+        <div class="feature-desc">Generate bid checklists and pre-fill standard documents automatically based on your company profile.</div>
+      </div>
+      <div class="glass-card feature-card animate-on-scroll">
+        <div class="feature-icon">⏰</div>
+        <div class="feature-title">Deadline Tracker</div>
+        <div class="feature-desc">Never miss a submission. Smart alerts notify you days before critical tender deadlines.</div>
+      </div>
+      <div class="glass-card feature-card animate-on-scroll">
+        <div class="feature-icon">📊</div>
+        <div class="feature-title">Multi-Tender Dashboard</div>
+        <div class="feature-desc">Manage all your tenders from a single, unified dashboard with status tracking and analytics.</div>
+      </div>
+      <div class="glass-card feature-card animate-on-scroll">
+        <div class="feature-icon">🔒</div>
+        <div class="feature-title">Secure Document Storage</div>
+        <div class="feature-desc">Bank-grade encrypted storage for all your tender documents. Access anytime, anywhere.</div>
+      </div>
+      <div class="glass-card feature-card animate-on-scroll">
+        <div class="feature-icon">✅</div>
+        <div class="feature-title">Compliance Checker</div>
+        <div class="feature-desc">Automated compliance verification against GeM, CPPP, and state portal requirements.</div>
+      </div>
+      <div class="glass-card feature-card animate-on-scroll">
+        <div class="feature-icon">👥</div>
+        <div class="feature-title">Team Collaboration</div>
+        <div class="feature-desc">Add team members, assign tasks, and collaborate on tenders in real-time.</div>
+      </div>
+      <div class="glass-card feature-card animate-on-scroll">
+        <div class="feature-icon">📈</div>
+        <div class="feature-title">Tender Status Tracking</div>
+        <div class="feature-desc">Track every tender from discovery to result. Get insights on your win rate and improve over time.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- How It Works -->
+<section class="section" style="background:rgba(255,255,255,0.01)">
+  <div class="container">
+    <div class="section-header animate-on-scroll">
+      <div class="badge badge-accent" style="margin-bottom:1rem">Simple Process</div>
+      <h2 class="section-title">How <span class="gradient-text">TendRAI Works</span></h2>
+      <p class="section-sub">Get started in minutes and start winning more government tenders with AI assistance.</p>
+    </div>
+    <div class="steps-grid">
+      <div class="step-card animate-on-scroll">
+        <div class="step-num">1</div>
+        <h3 class="step-title">Register & Setup</h3>
+        <p class="step-desc">Create your account and upload your company profile, certificates, and credentials.</p>
+      </div>
+      <div class="step-card animate-on-scroll">
+        <div class="step-num">2</div>
+        <h3 class="step-title">Upload Tender</h3>
+        <p class="step-desc">Upload the tender notice PDF or paste the portal link. AI instantly analyzes the document.</p>
+      </div>
+      <div class="step-card animate-on-scroll">
+        <div class="step-num">3</div>
+        <h3 class="step-title">AI Analysis</h3>
+        <p class="step-desc">Get a detailed compliance report, requirement checklist, and bidding strategy recommendations.</p>
+      </div>
+      <div class="step-card animate-on-scroll">
+        <div class="step-num">4</div>
+        <h3 class="step-title">Prepare & Submit</h3>
+        <p class="step-desc">Prepare your bid with AI assistance, track deadlines, and submit with confidence.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Pricing Preview -->
+<section class="section" id="pricing">
+  <div class="container">
+    <div class="section-header animate-on-scroll">
+      <div class="badge badge-secondary" style="margin-bottom:1rem">Pricing</div>
+      <h2 class="section-title">Simple, <span class="gradient-text">Transparent Pricing</span></h2>
+      <p class="section-sub">Choose the plan that fits your business. Upgrade or downgrade anytime.</p>
+    </div>
+    <div id="pricing-container" class="grid-3">
+      <!-- Loaded dynamically -->
+      <div class="glass-card pricing-card animate-on-scroll">
+        <div class="badge badge-secondary" style="margin-bottom:1rem">Starter</div>
+        <div style="margin:1.2rem 0"><span class="price-amount">₹999</span><span class="price-period">/month</span></div>
+        <ul class="price-features">
+          <li>5 Active Tenders</li><li>AI Document Analysis</li><li>Deadline Tracker</li><li>10 GB Storage</li><li>Email Support</li>
+        </ul>
+        <a href="/register" class="btn btn-outline" style="width:100%;justify-content:center">Get Started</a>
+      </div>
+      <div class="glass-card pricing-card highlighted animate-on-scroll">
+        <div class="badge badge-accent" style="margin-bottom:1rem">Professional</div>
+        <div style="margin:1.2rem 0"><span class="price-amount">₹2,999</span><span class="price-period">/month</span></div>
+        <ul class="price-features">
+          <li>Unlimited Tenders</li><li>Advanced AI Analysis</li><li>Compliance Checker</li><li>100 GB Storage</li><li>Team (5 members)</li><li>Priority Support</li>
+        </ul>
+        <a href="/register" class="btn btn-primary" style="width:100%;justify-content:center">Start Free Trial</a>
+      </div>
+      <div class="glass-card pricing-card animate-on-scroll">
+        <div class="badge badge-secondary" style="margin-bottom:1rem">Enterprise</div>
+        <div style="margin:1.2rem 0"><span class="price-amount" style="font-size:2rem">Custom</span></div>
+        <ul class="price-features">
+          <li>Unlimited Everything</li><li>Custom AI Training</li><li>Dedicated Manager</li><li>Unlimited Storage</li><li>24/7 Phone Support</li>
+        </ul>
+        <a href="/contact" class="btn btn-outline" style="width:100%;justify-content:center">Contact Sales</a>
+      </div>
+    </div>
+    <p style="text-align:center;margin-top:1.5rem;color:var(--text-muted);font-size:0.85rem">All plans include 14-day free trial. No credit card required.</p>
+  </div>
+</section>
+
+<!-- Testimonials -->
+<section class="section" style="background:rgba(255,255,255,0.01)">
+  <div class="container">
+    <div class="section-header animate-on-scroll">
+      <div class="badge badge-accent" style="margin-bottom:1rem">Success Stories</div>
+      <h2 class="section-title">Trusted by <span class="gradient-text">India's Contractors</span></h2>
+    </div>
+    <div id="testimonials-container" class="grid-3">
+      <div class="glass-card testimonial-card animate-on-scroll">
+        <div style="color:var(--warning);margin-bottom:0.8rem">★★★★★</div>
+        <p class="testimonial-text">"TendRAI helped us win 3 NHAI tenders in one quarter. The AI analysis is incredibly accurate and saves us days of manual work."</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">RK</div>
+          <div><div class="testimonial-name">Rajesh Kumar</div><div class="testimonial-company">RK Constructions, Mumbai</div></div>
+        </div>
+      </div>
+      <div class="glass-card testimonial-card animate-on-scroll">
+        <div style="color:var(--warning);margin-bottom:0.8rem">★★★★★</div>
+        <p class="testimonial-text">"Deadline tracking alone saved us from missing ₹2.5 Cr opportunities. The ROI on this platform is extraordinary."</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">PS</div>
+          <div><div class="testimonial-name">Priya Sharma</div><div class="testimonial-company">TechBuild Solutions, Pune</div></div>
+        </div>
+      </div>
+      <div class="glass-card testimonial-card animate-on-scroll">
+        <div style="color:var(--warning);margin-bottom:0.8rem">★★★★★</div>
+        <p class="testimonial-text">"The compliance checker caught errors we would have missed. Our bid success rate doubled in just 3 months."</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">AP</div>
+          <div><div class="testimonial-name">Amit Patel</div><div class="testimonial-company">Patel Infra Ltd, Ahmedabad</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="section">
+  <div class="container" style="max-width:800px">
+    <div class="section-header animate-on-scroll">
+      <h2 class="section-title">Frequently Asked <span class="gradient-text">Questions</span></h2>
+    </div>
+    <div id="faq-container">
+      <div class="faq-item">
+        <div class="faq-question">What is TendRAI? <span class="faq-toggle">+</span></div>
+        <div class="faq-answer">TendRAI is an AI-powered platform that helps contractors and MSMEs win government tenders by automating document preparation and bid management.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">How does AI document analysis work? <span class="faq-toggle">+</span></div>
+        <div class="faq-answer">Our AI scans tender documents, extracts key requirements, identifies compliance needs, and suggests bid strategies based on historical win data.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">Can I manage multiple tenders? <span class="faq-toggle">+</span></div>
+        <div class="faq-answer">Yes! All plans support multiple tender tracking. Professional and Enterprise plans offer unlimited tenders.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">Is my data secure? <span class="faq-toggle">+</span></div>
+        <div class="faq-answer">Absolutely. We use bank-grade encryption for all documents. Your data is stored on secure Indian servers compliant with IT Act 2000.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">Do you support all government portals? <span class="faq-toggle">+</span></div>
+        <div class="faq-answer">We support GeM, CPPP, NSWS, state-level portals, and 50+ government procurement platforms.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="container" style="max-width:700px">
+    <div class="animate-on-scroll">
+      <h2 class="section-title" style="margin-bottom:1rem">Ready to Win <span class="gradient-text">More Tenders?</span></h2>
+      <p style="color:var(--text-muted);margin-bottom:2rem;font-size:1.1rem">Join 500+ contractors already using TendRAI to streamline their bidding process.</p>
+      <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap">
+        <a href="/register" class="btn btn-primary btn-lg">Start Free 14-Day Trial</a>
+        <a href="/contact" class="btn btn-outline btn-lg">Talk to Sales</a>
+      </div>
+      <p style="color:var(--text-muted);font-size:0.82rem;margin-top:1rem">No credit card required • Cancel anytime</p>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="footer-grid">
+    <div>
+      <a href="/" class="navbar-brand" style="margin-bottom:1rem;display:inline-flex">
+        <div class="brand-logo">T</div>
+        <span class="brand-name" style="margin-left:0.5rem">Tend<span>RAI</span></span>
+      </a>
+      <p style="color:var(--text-muted);font-size:0.88rem;line-height:1.6;margin-top:1rem;max-width:260px">AI Powered Tender Filing & Bid Management Platform for India's contractors and MSMEs.</p>
+      <div style="margin-top:1.5rem;display:flex;gap:0.75rem">
+        <a href="#" style="color:var(--text-muted);font-size:1.2rem">🐦</a>
+        <a href="#" style="color:var(--text-muted);font-size:1.2rem">💼</a>
+        <a href="#" style="color:var(--text-muted);font-size:1.2rem">▶</a>
+      </div>
+    </div>
+    <div>
+      <div class="footer-title">Product</div>
+      <ul class="footer-links">
+        <li><a href="/features">Features</a></li>
+        <li><a href="/pricing">Pricing</a></li>
+        <li><a href="/how-it-works">How It Works</a></li>
+        <li><a href="/industries">Industries</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-title">Company</div>
+      <ul class="footer-links">
+        <li><a href="/about">About Us</a></li>
+        <li><a href="/blog">Blog</a></li>
+        <li><a href="/contact">Contact</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-title">Legal</div>
+      <ul class="footer-links">
+        <li><a href="#">Privacy Policy</a></li>
+        <li><a href="#">Terms of Service</a></li>
+        <li><a href="#">Refund Policy</a></li>
+      </ul>
+      <div style="margin-top:1.5rem">
+        <div style="font-size:0.8rem;color:var(--text-muted)">Contact</div>
+        <div style="font-size:0.88rem;margin-top:0.3rem" id="footer-email">hello@tendrai.in</div>
+        <div style="font-size:0.88rem;color:var(--text-muted)" id="footer-phone">+91 98765 43210</div>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2024 TendRAI. All rights reserved. Made with ❤ in India.</p>
+  </div>
+</footer>
+
+<script src="/js/app.js"></script>
+<script>
+// FAQ toggle
+document.querySelectorAll('.faq-question').forEach(q => {
+  q.addEventListener('click', () => {
+    const item = q.closest('.faq-item');
+    item.classList.toggle('open');
+  });
+});
+
+// Load dynamic content from DB
+async function loadContent() {
+  try {
+    const data = await fetch('/api/admin/content').then(r => r.json());
+    if (data.content) {
+      const c = data.content;
+      if (c.contactEmail) document.getElementById('footer-email').textContent = c.contactEmail;
+      if (c.contactPhone) document.getElementById('footer-phone').textContent = c.contactPhone;
+    }
+  } catch(e) {}
+}
+loadContent();
+</script>
+</body>
+</html>

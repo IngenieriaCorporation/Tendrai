@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login — TendRAI</title>
+<link rel="stylesheet" href="/css/style.css">
+<style>
+body { display:flex; align-items:center; justify-content:center; min-height:100vh; padding:1rem;
+  background: radial-gradient(ellipse at 30% 40%, rgba(34,211,238,0.06) 0%, transparent 50%), radial-gradient(ellipse at 70% 80%, rgba(99,102,241,0.08) 0%, transparent 50%); }
+.auth-card { width:100%; max-width:440px; padding:2.5rem; }
+.auth-logo { text-align:center; margin-bottom:2rem; }
+.auth-title { font-size:1.6rem; font-weight:800; margin-bottom:0.4rem; text-align:center; }
+.auth-sub { color:var(--text-muted); font-size:0.9rem; text-align:center; margin-bottom:2rem; }
+.divider { display:flex; align-items:center; gap:1rem; margin:1.5rem 0; color:var(--text-muted); font-size:0.8rem; }
+.divider::before,.divider::after { content:''; flex:1; height:1px; background:var(--card-border); }
+</style>
+</head>
+<body>
+<div class="glass-card auth-card">
+  <div class="auth-logo">
+    <a href="/" class="navbar-brand" style="justify-content:center">
+      <div class="brand-logo">T</div>
+      <span class="brand-name" style="margin-left:0.5rem">Tend<span>RAI</span></span>
+    </a>
+  </div>
+  <h1 class="auth-title">Welcome Back</h1>
+  <p class="auth-sub">Sign in to your TendRAI account</p>
+  <div id="error-msg" class="alert alert-error" style="display:none"></div>
+  <form id="login-form">
+    <div class="form-group">
+      <label class="form-label">Email Address</label>
+      <input type="email" id="email" class="form-input" placeholder="you@company.com" required>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Password</label>
+      <input type="password" id="password" class="form-input" placeholder="Your password" required>
+    </div>
+    <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;margin-top:0.5rem" id="submit-btn">
+      Sign In
+    </button>
+  </form>
+  <p style="text-align:center;margin-top:1.5rem;font-size:0.88rem;color:var(--text-muted)">
+    Don't have an account? <a href="/register" style="color:var(--accent)">Create free account</a>
+  </p>
+  <p style="text-align:center;margin-top:0.5rem;font-size:0.8rem;color:var(--text-muted)">
+    <a href="/admin/login" style="color:var(--text-muted)">Admin Login →</a>
+  </p>
+</div>
+<script src="/js/app.js"></script>
+<script>
+// Redirect if already logged in
+if (Auth.isLoggedIn()) window.location.href = '/dashboard';
+
+document.getElementById('login-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const btn = document.getElementById('submit-btn');
+  const errEl = document.getElementById('error-msg');
+  btn.textContent = 'Signing in...'; btn.disabled = true;
+  errEl.style.display = 'none';
+  try {
+    const data = await API.post('/login', {
+      email: document.getElementById('email').value,
+      password: document.getElementById('password').value
+    });
+    localStorage.setItem('tendrai_token', data.token);
+    localStorage.setItem('tendrai_user', JSON.stringify(data.user));
+    window.location.href = '/dashboard';
+  } catch(err) {
+    errEl.textContent = err.message; errEl.style.display = 'block';
+    btn.textContent = 'Sign In'; btn.disabled = false;
+  }
+});
+</script>
+</body>
+</html>

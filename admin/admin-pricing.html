@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pricing — TendRAI Admin</title>
+<link rel="stylesheet" href="/css/style.css">
+<link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+<div class="admin-layout">
+<aside class="admin-sidebar">
+  <div class="admin-sidebar-logo">
+    <div style="display:flex;align-items:center;gap:0.5rem"><div class="brand-logo" style="width:30px;height:30px;font-size:0.9rem">T</div><span class="brand-name" style="font-size:1.1rem">Tend<span>RAI</span></span></div>
+    <div class="admin-logo-badge">ADMIN PANEL</div>
+  </div>
+  <ul class="admin-nav">
+    <li><a href="/admin"><span class="a-icon">📊</span>Dashboard</a></li>
+    <li><a href="/admin/users"><span class="a-icon">👥</span>Users</a></li>
+    <li><a href="/admin/tenders"><span class="a-icon">📋</span>Tenders</a></li>
+    <li><a href="/admin/pricing" class="active"><span class="a-icon">💰</span>Pricing</a></li>
+    <li><a href="/admin/content"><span class="a-icon">📝</span>Content</a></li>
+    <li style="margin-top:1rem;padding-top:1rem;border-top:1px solid var(--card-border)"><a href="/"><span class="a-icon">🌐</span>View Website</a></li>
+    <li><a href="#" onclick="AdminAuth.logout()"><span class="a-icon">→</span>Logout</a></li>
+  </ul>
+</aside>
+<main class="admin-main">
+  <div class="admin-header">
+    <div><div class="admin-title">Pricing Management</div><div style="font-size:0.82rem;color:var(--text-muted)">Modify pricing plans — changes update website immediately</div></div>
+    <button class="btn btn-primary btn-sm" onclick="openAddPlan()">+ Add Plan</button>
+  </div>
+
+  <div id="plans-grid" class="grid-3"></div>
+</main>
+</div>
+
+<!-- Edit Plan Modal -->
+<div id="plan-modal" class="modal-overlay">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="plan-modal-title">Edit Plan</div>
+      <button class="modal-close" onclick="document.getElementById('plan-modal').classList.remove('active')">✕</button>
+    </div>
+    <div id="plan-msg" style="display:none" class="alert"></div>
+    <form id="plan-form">
+      <input type="hidden" id="plan-id">
+      <div class="form-group"><label class="form-label">Plan Name</label><input type="text" id="plan-name" class="form-input" required></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+        <div class="form-group"><label class="form-label">Price (₹)</label><input type="number" id="plan-price" class="form-input" required></div>
+        <div class="form-group"><label class="form-label">Period</label>
+          <select id="plan-period" class="form-input"><option value="month">Monthly</option><option value="year">Yearly</option></select>
+        </div>
+      </div>
+      <div class="form-group"><label class="form-label">Features (one per line)</label><textarea id="plan-features" class="form-input" rows="6" placeholder="5 Active Tenders&#10;AI Document Analysis&#10;Deadline Tracker"></textarea></div>
+      <div style="display:flex;gap:1rem">
+        <label style="display:flex;align-items:center;gap:0.5rem;font-size:0.85rem;cursor:pointer"><input type="checkbox" id="plan-highlighted"> Highlight as "Most Popular"</label>
+        <label style="display:flex;align-items:center;gap:0.5rem;font-size:0.85rem;cursor:pointer"><input type="checkbox" id="plan-custom"> Custom pricing (hide price)</label>
+      </div>
+      <div style="display:flex;gap:0.75rem;margin-top:1.5rem">
+        <button type="submit" class="btn btn-primary" style="flex:1;justify-content:center">Save Plan</button>
+        <button type="button" class="btn btn-outline" onclick="document.getElementById('plan-modal').classList.remove('active')">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script src="/js/app.js"></script>
+<script>
+if (!AdminAuth.isLoggedIn()) window.location.href = '/admin/login';
+
+async function loadPlans() {
+  try {
+    const data = await fetch('/api/admin/pricing').then(r => r.json());
+    document.getElementById('plans-grid').innerHTML = data.plans.map(p => `
+      <div class="glass-card" style="padding:1.8rem${p.highlighted?';border-color:var(--accent)':''}">
+        ${p.highlighted?'<div class="badge badge-accent" style="margin-bottom:0.75rem">MOST POPULAR</div>':''}
+        <div style="font-size:1.3rem;font-weight:800;margin-bottom:0.3rem">${p.name}</div>
+        <div style="font-size:2rem;font-weight:800;font-family:\'Syne\',sans-serif;color:var(--accent);margin-bottom:1rem">${p.isCustom?'Custom':'₹'+p.price.toLocaleString('en-IN')}<span style="font-size:0.9rem;color:var(--text-muted);font-family:\'DM Sans\',sans-serif;font-weight:400">/${p.period}</span></div>
+        <ul style="list-style:none;font-size:0.82rem;color:var(--text-muted);margin-bottom:1.5rem">${p.features.map(f=>`<li style="padding:0.3rem 0;border-bottom:1px solid rgba(255,255,255,0.04)">✓ ${f}</li>`).join('')}</ul>
+        <button class="btn btn-outline btn-sm" style="width:100%;justify-content:center" onclick='openEditPlan(${JSON.stringify(p)})'>✏ Edit Plan</button>
+      </div>`).join('');
+  } catch(e) { showToast(e.message,'error'); }
+}
+
+function openEditPlan(plan) {
+  document.getElementById('plan-modal-title').textContent = 'Edit Plan';
+  document.getElementById('plan-id').value = plan._id;
+  document.getElementById('plan-name').value = plan.name;
+  document.getElementById('plan-price').value = plan.price;
+  document.getElementById('plan-period').value = plan.period;
+  document.getElementById('plan-features').value = plan.features.join('\n');
+  document.getElementById('plan-highlighted').checked = plan.highlighted;
+  document.getElementById('plan-custom').checked = plan.isCustom;
+  document.getElementById('plan-modal').classList.add('active');
+}
+
+function openAddPlan() {
+  document.getElementById('plan-modal-title').textContent = 'Add New Plan';
+  document.getElementById('plan-form').reset();
+  document.getElementById('plan-id').value = '';
+  document.getElementById('plan-modal').classList.add('active');
+}
+
+document.getElementById('plan-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const msg = document.getElementById('plan-msg');
+  try {
+    await AdminAuth.post('/admin/pricing', {
+      planId: document.getElementById('plan-id').value || null,
+      name: document.getElementById('plan-name').value,
+      price: parseInt(document.getElementById('plan-price').value),
+      period: document.getElementById('plan-period').value,
+      features: document.getElementById('plan-features').value.split('\n').map(f=>f.trim()).filter(Boolean),
+      highlighted: document.getElementById('plan-highlighted').checked,
+      isCustom: document.getElementById('plan-custom').checked
+    });
+    document.getElementById('plan-modal').classList.remove('active');
+    showToast('Pricing updated! Website now reflects new pricing.', 'success');
+    loadPlans();
+  } catch(e) { msg.textContent = e.message; msg.className='alert alert-error'; msg.style.display='block'; }
+});
+
+loadPlans();
+</script>
+</body>
+</html>

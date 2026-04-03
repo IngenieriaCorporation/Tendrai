@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tenders — TendRAI Admin</title>
+<link rel="stylesheet" href="/css/style.css">
+<link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+<div class="admin-layout">
+<aside class="admin-sidebar">
+  <div class="admin-sidebar-logo">
+    <div style="display:flex;align-items:center;gap:0.5rem"><div class="brand-logo" style="width:30px;height:30px;font-size:0.9rem">T</div><span class="brand-name" style="font-size:1.1rem">Tend<span>RAI</span></span></div>
+    <div class="admin-logo-badge">ADMIN PANEL</div>
+  </div>
+  <ul class="admin-nav">
+    <li><a href="/admin"><span class="a-icon">📊</span>Dashboard</a></li>
+    <li><a href="/admin/users"><span class="a-icon">👥</span>Users</a></li>
+    <li><a href="/admin/tenders" class="active"><span class="a-icon">📋</span>Tenders</a></li>
+    <li><a href="/admin/pricing"><span class="a-icon">💰</span>Pricing</a></li>
+    <li><a href="/admin/content"><span class="a-icon">📝</span>Content</a></li>
+    <li style="margin-top:1rem;padding-top:1rem;border-top:1px solid var(--card-border)"><a href="/"><span class="a-icon">🌐</span>View Website</a></li>
+    <li><a href="#" onclick="AdminAuth.logout()"><span class="a-icon">→</span>Logout</a></li>
+  </ul>
+</aside>
+<main class="admin-main">
+  <div class="admin-header">
+    <div><div class="admin-title">Tender Management</div><div style="font-size:0.82rem;color:var(--text-muted)">View and manage all user tenders</div></div>
+  </div>
+  <div style="display:flex;gap:1rem;margin-bottom:1.5rem;flex-wrap:wrap">
+    <input type="text" id="t-search" class="form-input" placeholder="🔍 Search tenders..." style="max-width:280px" oninput="loadTenders()">
+    <select id="t-status-filter" class="form-input" style="max-width:150px" onchange="loadTenders()">
+      <option value="">All Status</option>
+      <option value="draft">Draft</option><option value="in-progress">In Progress</option>
+      <option value="submitted">Submitted</option><option value="won">Won</option><option value="lost">Lost</option>
+    </select>
+  </div>
+  <div class="glass-card">
+    <div class="table-wrapper">
+      <table>
+        <thead><tr><th>Tender</th><th>User</th><th>Category</th><th>Deadline</th><th>Value</th><th>Status</th><th>Actions</th></tr></thead>
+        <tbody id="tenders-tbody"><tr><td colspan="7" style="text-align:center;padding:2rem;color:var(--text-muted)">Loading...</td></tr></tbody>
+      </table>
+    </div>
+    <div style="padding:1rem;display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--card-border)">
+      <span id="t-count" style="font-size:0.82rem;color:var(--text-muted)"></span>
+      <div id="t-page-btns" style="display:flex;gap:0.5rem"></div>
+    </div>
+  </div>
+</main>
+</div>
+<script src="/js/app.js"></script>
+<script>
+if (!AdminAuth.isLoggedIn()) window.location.href = '/admin/login';
+async function loadTenders(page=1) {
+  const search = document.getElementById('t-search').value;
+  const status = document.getElementById('t-status-filter').value;
+  try {
+    const data = await AdminAuth.get(`/admin/tenders?search=${search}&status=${status}&page=${page}&limit=20`);
+    document.getElementById('t-count').textContent = `${data.total} tenders total`;
+    const tbody = document.getElementById('tenders-tbody');
+    tbody.innerHTML = data.tenders.map(t => `
+      <tr>
+        <td><div style="font-size:0.85rem;font-weight:600">${t.title}</div><div style="font-size:0.72rem;color:var(--text-muted)">${t.tenderNumber||'-'}</div></td>
+        <td><div style="font-size:0.82rem">${t.userId?.name||'Unknown'}</div><div style="font-size:0.72rem;color:var(--text-muted)">${t.userId?.email||''}</div></td>
+        <td><span class="badge badge-secondary" style="font-size:0.72rem;text-transform:capitalize">${t.category}</span></td>
+        <td style="font-size:0.82rem">${formatDate(t.submissionDeadline)}</td>
+        <td style="font-size:0.82rem">${t.value ? formatCurrency(t.value) : '-'}</td>
+        <td>${statusBadge(t.status)}</td>
+        <td><button class="btn btn-sm btn-danger" onclick="deleteTender('${t._id}')">Delete</button></td>
+      </tr>`).join('') || '<tr><td colspan="7" style="text-align:center;padding:2rem;color:var(--text-muted)">No tenders found</td></tr>';
+    document.getElementById('t-page-btns').innerHTML = Array.from({length:data.pages},(_,i)=>`<button class="btn btn-sm ${i+1===page?'btn-primary':'btn-outline'}" onclick="loadTenders(${i+1})">${i+1}</button>`).join('');
+  } catch(e) { showToast(e.message,'error'); }
+}
+async function deleteTender(id) {
+  if (!confirm('Delete this tender? This cannot be undone.')) return;
+  try { await AdminAuth.delete(`/admin/tenders/${id}`); showToast('Deleted','success'); loadTenders(); } catch(e) { showToast(e.message,'error'); }
+}
+loadTenders();
+</script>
+</body>
+</html>

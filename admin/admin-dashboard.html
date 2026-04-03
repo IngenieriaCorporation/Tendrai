@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Dashboard — TendRAI</title>
+<link rel="stylesheet" href="/css/style.css">
+<link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+<div class="admin-layout">
+<!-- Sidebar -->
+<aside class="admin-sidebar">
+  <div class="admin-sidebar-logo">
+    <div style="display:flex;align-items:center;gap:0.5rem"><div class="brand-logo" style="width:30px;height:30px;font-size:0.9rem">T</div><span class="brand-name" style="font-size:1.1rem">Tend<span>RAI</span></span></div>
+    <div class="admin-logo-badge">ADMIN PANEL</div>
+  </div>
+  <ul class="admin-nav">
+    <li><a href="/admin" class="active"><span class="a-icon">📊</span>Dashboard</a></li>
+    <li><a href="/admin/users"><span class="a-icon">👥</span>Users</a></li>
+    <li><a href="/admin/tenders"><span class="a-icon">📋</span>Tenders</a></li>
+    <li><a href="/admin/pricing"><span class="a-icon">💰</span>Pricing</a></li>
+    <li><a href="/admin/content"><span class="a-icon">📝</span>Content</a></li>
+    <li style="margin-top:1rem;padding-top:1rem;border-top:1px solid var(--card-border)"><a href="/"><span class="a-icon">🌐</span>View Website</a></li>
+    <li><a href="#" onclick="AdminAuth.logout()"><span class="a-icon">→</span>Logout</a></li>
+  </ul>
+  <div style="padding:0.75rem;background:rgba(255,255,255,0.03);border-radius:8px;margin-top:1rem">
+    <div style="font-size:0.75rem;font-weight:600" id="admin-name">Admin</div>
+    <div style="font-size:0.7rem;color:var(--text-muted)" id="admin-email">-</div>
+  </div>
+</aside>
+
+<!-- Main -->
+<main class="admin-main">
+  <div class="admin-header">
+    <div><div class="admin-title">Dashboard Overview</div><div style="font-size:0.82rem;color:var(--text-muted)" id="last-updated">Loading...</div></div>
+    <button class="btn btn-primary btn-sm" onclick="loadDashboard()">↻ Refresh</button>
+  </div>
+
+  <div class="admin-stats">
+    <div class="glass-card admin-stat-card"><div class="admin-stat-val" id="s-users" style="color:var(--accent)">-</div><div class="admin-stat-lbl">Total Users</div></div>
+    <div class="glass-card admin-stat-card"><div class="admin-stat-val" id="s-active" style="color:var(--success)">-</div><div class="admin-stat-lbl">Active Users</div></div>
+    <div class="glass-card admin-stat-card"><div class="admin-stat-val" id="s-tenders" style="color:var(--secondary)">-</div><div class="admin-stat-lbl">Total Tenders</div></div>
+    <div class="glass-card admin-stat-card"><div class="admin-stat-val" style="color:var(--warning)">₹</div><div class="admin-stat-lbl">Revenue (Soon)</div></div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:2rem">
+    <!-- Subscription breakdown -->
+    <div class="glass-card" style="padding:1.5rem">
+      <div style="font-weight:700;margin-bottom:1rem;font-size:0.95rem">Subscription Breakdown</div>
+      <div id="sub-stats"><p style="color:var(--text-muted);font-size:0.85rem">Loading...</p></div>
+    </div>
+    <!-- Quick actions -->
+    <div class="glass-card" style="padding:1.5rem">
+      <div style="font-weight:700;margin-bottom:1rem;font-size:0.95rem">Quick Actions</div>
+      <div style="display:flex;flex-direction:column;gap:0.75rem">
+        <a href="/admin/users" class="btn btn-outline" style="justify-content:flex-start;gap:0.75rem">👥 Manage Users</a>
+        <a href="/admin/pricing" class="btn btn-outline" style="justify-content:flex-start;gap:0.75rem">💰 Update Pricing</a>
+        <a href="/admin/content" class="btn btn-outline" style="justify-content:flex-start;gap:0.75rem">📝 Edit Website Content</a>
+        <a href="/admin/tenders" class="btn btn-outline" style="justify-content:flex-start;gap:0.75rem">📋 View All Tenders</a>
+      </div>
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem">
+    <!-- Recent users -->
+    <div class="glass-card" style="padding:1.5rem">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem">
+        <div style="font-weight:700;font-size:0.95rem">Recent Users</div>
+        <a href="/admin/users" style="font-size:0.8rem;color:var(--accent);text-decoration:none">View all →</a>
+      </div>
+      <div id="recent-users"></div>
+    </div>
+    <!-- Recent tenders -->
+    <div class="glass-card" style="padding:1.5rem">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem">
+        <div style="font-weight:700;font-size:0.95rem">Recent Tenders</div>
+        <a href="/admin/tenders" style="font-size:0.8rem;color:var(--accent);text-decoration:none">View all →</a>
+      </div>
+      <div id="recent-tenders"></div>
+    </div>
+  </div>
+</main>
+</div>
+
+<script src="/js/app.js"></script>
+<script>
+if (!AdminAuth.isLoggedIn()) window.location.href = '/admin/login';
+const admin = AdminAuth.getAdmin();
+if (admin) { document.getElementById('admin-name').textContent = admin.name; document.getElementById('admin-email').textContent = admin.email; }
+
+async function loadDashboard() {
+  document.getElementById('last-updated').textContent = 'Updated: ' + new Date().toLocaleTimeString('en-IN');
+  try {
+    const data = await AdminAuth.get('/admin/dashboard');
+    document.getElementById('s-users').textContent = data.stats.totalUsers;
+    document.getElementById('s-active').textContent = data.stats.activeUsers;
+    document.getElementById('s-tenders').textContent = data.stats.totalTenders;
+
+    // Sub stats
+    const subEl = document.getElementById('sub-stats');
+    const plans = ['free','starter','professional','enterprise'];
+    const colors = {'free':'var(--text-muted)','starter':'var(--accent)','professional':'var(--secondary)','enterprise':'var(--warning)'};
+    subEl.innerHTML = plans.map(p => {
+      const found = data.subscriptionStats?.find(s => s._id === p);
+      const count = found ? found.count : 0;
+      return `<div style="display:flex;align-items:center;justify-content:space-between;padding:0.5rem 0;border-bottom:1px solid rgba(255,255,255,0.04)">
+        <span style="font-size:0.85rem;text-transform:capitalize">${p}</span>
+        <span style="font-weight:700;color:${colors[p]}">${count}</span>
+      </div>`;
+    }).join('');
+
+    // Recent users
+    document.getElementById('recent-users').innerHTML = data.recentUsers.map(u =>
+      `<div style="display:flex;align-items:center;gap:0.75rem;padding:0.6rem 0;border-bottom:1px solid rgba(255,255,255,0.04)">
+        <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--secondary));display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700;color:white;flex-shrink:0">${u.name.charAt(0)}</div>
+        <div><div style="font-size:0.82rem;font-weight:600">${u.name}</div><div style="font-size:0.72rem;color:var(--text-muted)">${u.email}</div></div>
+        <span class="badge ${u.isActive?'badge-success':'badge-danger'}" style="margin-left:auto;font-size:0.68rem">${u.isActive?'Active':'Inactive'}</span>
+      </div>`
+    ).join('') || '<p style="color:var(--text-muted);font-size:0.82rem">No users yet</p>';
+
+    // Recent tenders
+    document.getElementById('recent-tenders').innerHTML = data.recentTenders.map(t =>
+      `<div style="padding:0.6rem 0;border-bottom:1px solid rgba(255,255,255,0.04)">
+        <div style="font-size:0.82rem;font-weight:600;margin-bottom:0.2rem">${t.title}</div>
+        <div style="font-size:0.72rem;color:var(--text-muted)">${t.userId?.name || 'Unknown'} • ${statusBadge(t.status)}</div>
+      </div>`
+    ).join('') || '<p style="color:var(--text-muted);font-size:0.82rem">No tenders yet</p>';
+  } catch(e) { console.error(e); showToast(e.message, 'error'); }
+}
+loadDashboard();
+</script>
+</body>
+</html>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How It Works — TendRAI</title>
+<link rel="stylesheet" href="/css/style.css">
+<style>
+.hero-sm{padding:8rem 2rem 4rem;text-align:center;background:radial-gradient(ellipse at center,rgba(34,211,238,0.06) 0%,transparent 70%)}
+.timeline{position:relative;padding-left:3rem}
+.timeline::before{content:'';position:absolute;left:1rem;top:0;bottom:0;width:2px;background:linear-gradient(to bottom,var(--accent),var(--secondary))}
+.tl-item{position:relative;padding:0 0 3rem 2rem}
+.tl-dot{position:absolute;left:-1.5rem;top:0.2rem;width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--secondary));display:flex;align-items:center;justify-content:center;font-size:0.8rem;font-weight:800;font-family:'Syne',sans-serif;color:white}
+.tl-num{font-size:0.7rem;color:var(--text-muted);font-weight:600;margin-bottom:0.3rem;text-transform:uppercase;letter-spacing:0.1em}
+.tl-title{font-size:1.3rem;font-weight:800;margin-bottom:0.6rem}
+.tl-desc{color:var(--text-muted);line-height:1.7;max-width:500px}
+</style>
+</head>
+<body>
+<nav class="navbar"><a href="/" class="navbar-brand"><div class="brand-logo">T</div><span class="brand-name">Tend<span>RAI</span></span></a>
+<ul class="nav-links"><li><a href="/features">Features</a></li><li><a href="/pricing">Pricing</a></li><li><a href="/how-it-works" style="color:white">How It Works</a></li><li><a href="/about">About</a></li></ul>
+<div class="nav-cta"><a href="/login" class="btn btn-ghost">Login</a><a href="/register" class="btn btn-primary">Start Free Trial</a></div></nav>
+
+<section class="hero-sm">
+  <div class="badge badge-accent" style="margin-bottom:1rem">Simple Process</div>
+  <h1 class="section-title">How <span class="gradient-text">TendRAI Works</span></h1>
+  <p style="color:var(--text-muted);max-width:520px;margin:1rem auto;font-size:1.05rem">From registration to winning — get started in under 10 minutes and manage all your tenders with AI assistance.</p>
+</section>
+
+<section class="section" style="padding-top:2rem">
+  <div class="container" style="max-width:800px">
+    <div class="timeline">
+      <div class="tl-item animate-on-scroll">
+        <div class="tl-dot">1</div>
+        <div class="tl-num">Step One</div>
+        <div class="tl-title">Create Your Account</div>
+        <div class="tl-desc">Register in under 2 minutes. Set up your company profile with registration details, certificates, and past experience. This data powers our AI personalization — the more you add, the smarter your recommendations.</div>
+      </div>
+      <div class="tl-item animate-on-scroll">
+        <div class="tl-dot">2</div>
+        <div class="tl-num">Step Two</div>
+        <div class="tl-title">Discover & Import Tenders</div>
+        <div class="tl-desc">Browse government portals or upload tender documents directly to TendRAI. Supports GeM, CPPP, NSWS, eProcurement systems, and 50+ state portals. Simply upload the PDF or paste the tender URL.</div>
+      </div>
+      <div class="tl-item animate-on-scroll">
+        <div class="tl-dot">3</div>
+        <div class="tl-num">Step Three</div>
+        <div class="tl-title">Run AI Analysis</div>
+        <div class="tl-desc">Our AI reads the entire tender document in seconds. It extracts requirements, identifies eligibility criteria, checks your compliance status, and generates a complete bid preparation checklist. You get a score showing your readiness to bid.</div>
+      </div>
+      <div class="tl-item animate-on-scroll">
+        <div class="tl-dot">4</div>
+        <div class="tl-num">Step Four</div>
+        <div class="tl-title">Prepare Your Bid</div>
+        <div class="tl-desc">Follow the AI-generated checklist to prepare documents. Upload files directly to TendRAI's secure storage. The compliance checker validates each document in real-time before you finalize your bid package.</div>
+      </div>
+      <div class="tl-item animate-on-scroll">
+        <div class="tl-dot">5</div>
+        <div class="tl-num">Step Five</div>
+        <div class="tl-title">Track & Submit</div>
+        <div class="tl-desc">Get deadline reminders, team collaboration, and status tracking all in one dashboard. Submit with confidence knowing every requirement is met. Track results and improve your win rate with each tender.</div>
+      </div>
+    </div>
+    <div style="margin-top:3rem;text-align:center">
+      <a href="/register" class="btn btn-primary btn-lg">Start Your First Tender Free</a>
+    </div>
+  </div>
+</section>
+
+<footer style="text-align:center;padding:2rem;border-top:1px solid var(--card-border);color:var(--text-muted);font-size:0.85rem">
+  <a href="/" style="color:var(--accent);text-decoration:none">← Back to Home</a> &nbsp;|&nbsp; © 2024 TendRAI
+</footer>
+<script src="/js/app.js"></script>
+</body>
+</html>

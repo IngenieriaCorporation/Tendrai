@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Content Management — TendRAI Admin</title>
+<link rel="stylesheet" href="/css/style.css">
+<link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+<div class="admin-layout">
+<aside class="admin-sidebar">
+  <div class="admin-sidebar-logo">
+    <div style="display:flex;align-items:center;gap:0.5rem"><div class="brand-logo" style="width:30px;height:30px;font-size:0.9rem">T</div><span class="brand-name" style="font-size:1.1rem">Tend<span>RAI</span></span></div>
+    <div class="admin-logo-badge">ADMIN PANEL</div>
+  </div>
+  <ul class="admin-nav">
+    <li><a href="/admin"><span class="a-icon">📊</span>Dashboard</a></li>
+    <li><a href="/admin/users"><span class="a-icon">👥</span>Users</a></li>
+    <li><a href="/admin/tenders"><span class="a-icon">📋</span>Tenders</a></li>
+    <li><a href="/admin/pricing"><span class="a-icon">💰</span>Pricing</a></li>
+    <li><a href="/admin/content" class="active"><span class="a-icon">📝</span>Content</a></li>
+    <li style="margin-top:1rem;padding-top:1rem;border-top:1px solid var(--card-border)"><a href="/"><span class="a-icon">🌐</span>View Website</a></li>
+    <li><a href="#" onclick="AdminAuth.logout()"><span class="a-icon">→</span>Logout</a></li>
+  </ul>
+</aside>
+<main class="admin-main">
+  <div class="admin-header">
+    <div><div class="admin-title">Content Management</div><div style="font-size:0.82rem;color:var(--text-muted)">Edit website content — all changes update the live website instantly</div></div>
+  </div>
+
+  <!-- Tab nav -->
+  <div class="tab-nav">
+    <button class="tab-btn active" onclick="switchTab('hero',this)">Hero & Branding</button>
+    <button class="tab-btn" onclick="switchTab('contact',this)">Contact & Socials</button>
+    <button class="tab-btn" onclick="switchTab('faq',this)">FAQs</button>
+    <button class="tab-btn" onclick="switchTab('testimonials',this)">Testimonials</button>
+    <button class="tab-btn" onclick="switchTab('blog',this)">Blog Posts</button>
+  </div>
+
+  <div id="save-msg" style="display:none" class="alert" style="margin-bottom:1rem"></div>
+
+  <!-- HERO TAB -->
+  <div id="tab-hero" class="ctab">
+    <div class="glass-card" style="padding:2rem;max-width:700px">
+      <h3 style="font-weight:700;margin-bottom:1.5rem">Hero Section & Branding</h3>
+      <div class="form-group"><label class="form-label">Site Tagline</label><input type="text" id="c-tagline" class="form-input" placeholder="AI Powered Tender Filing & Bid Management Platform"></div>
+      <div class="form-group"><label class="form-label">Hero Headline</label><input type="text" id="c-headline" class="form-input" placeholder="Win More Government Tenders with AI"></div>
+      <div class="form-group"><label class="form-label">Hero Subtext</label><textarea id="c-subtext" class="form-input" rows="3" placeholder="Upload documents, track deadlines..."></textarea></div>
+      <button class="btn btn-primary" onclick="saveContent('hero')">💾 Save Hero Content</button>
+    </div>
+  </div>
+
+  <!-- CONTACT TAB -->
+  <div id="tab-contact" class="ctab" style="display:none">
+    <div class="glass-card" style="padding:2rem;max-width:700px">
+      <h3 style="font-weight:700;margin-bottom:1.5rem">Contact Information & Social Links</h3>
+      <div class="form-group"><label class="form-label">Contact Email</label><input type="email" id="c-email" class="form-input"></div>
+      <div class="form-group"><label class="form-label">Contact Phone</label><input type="tel" id="c-phone" class="form-input"></div>
+      <div class="form-group"><label class="form-label">Office Address</label><input type="text" id="c-address" class="form-input"></div>
+      <h4 style="font-weight:700;margin:1.5rem 0 0.75rem;font-size:0.9rem">Social Media Links</h4>
+      <div class="form-group"><label class="form-label">Twitter / X URL</label><input type="url" id="c-twitter" class="form-input" placeholder="https://twitter.com/tendrai"></div>
+      <div class="form-group"><label class="form-label">LinkedIn URL</label><input type="url" id="c-linkedin" class="form-input" placeholder="https://linkedin.com/company/tendrai"></div>
+      <div class="form-group"><label class="form-label">YouTube URL</label><input type="url" id="c-youtube" class="form-input" placeholder="https://youtube.com/@tendrai"></div>
+      <button class="btn btn-primary" onclick="saveContent('contact')">💾 Save Contact Info</button>
+    </div>
+  </div>
+
+  <!-- FAQ TAB -->
+  <div id="tab-faq" class="ctab" style="display:none">
+    <div class="glass-card" style="padding:2rem;max-width:700px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem">
+        <h3 style="font-weight:700">Manage FAQs</h3>
+        <button class="btn btn-primary btn-sm" onclick="addFAQ()">+ Add FAQ</button>
+      </div>
+      <div id="faq-list"></div>
+      <button class="btn btn-primary" style="margin-top:1rem" onclick="saveFAQs()">💾 Save All FAQs</button>
+    </div>
+  </div>
+
+  <!-- TESTIMONIALS TAB -->
+  <div id="tab-testimonials" class="ctab" style="display:none">
+    <div class="glass-card" style="padding:2rem;max-width:700px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem">
+        <h3 style="font-weight:700">Manage Testimonials</h3>
+        <button class="btn btn-primary btn-sm" onclick="addTestimonial()">+ Add</button>
+      </div>
+      <div id="testimonials-list"></div>
+      <button class="btn btn-primary" style="margin-top:1rem" onclick="saveTestimonials()">💾 Save Testimonials</button>
+    </div>
+  </div>
+
+  <!-- BLOG TAB -->
+  <div id="tab-blog" class="ctab" style="display:none">
+    <div class="glass-card" style="padding:2rem;max-width:700px">
+      <h3 style="font-weight:700;margin-bottom:1.5rem">Add Blog Post</h3>
+      <div class="form-group"><label class="form-label">Title</label><input type="text" id="blog-title" class="form-input" required></div>
+      <div class="form-group"><label class="form-label">Category</label><input type="text" id="blog-cat" class="form-input" placeholder="Tips & Tricks"></div>
+      <div class="form-group"><label class="form-label">Excerpt</label><textarea id="blog-excerpt" class="form-input" rows="2"></textarea></div>
+      <div class="form-group"><label class="form-label">Content</label><textarea id="blog-content" class="form-input" rows="8"></textarea></div>
+      <button class="btn btn-primary" onclick="addBlogPost()">Publish Post</button>
+    </div>
+  </div>
+</main>
+</div>
+
+<script src="/js/app.js"></script>
+<script>
+if (!AdminAuth.isLoggedIn()) window.location.href = '/admin/login';
+let contentData = {};
+let faqs = [];
+let testimonials = [];
+
+function switchTab(tab, el) {
+  document.querySelectorAll('.ctab').forEach(t => t.style.display='none');
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(`tab-${tab}`).style.display='block';
+  el.classList.add('active');
+}
+
+async function loadContent() {
+  try {
+    const data = await fetch('/api/admin/content').then(r => r.json());
+    contentData = data.content || {};
+    faqs = contentData.faqs || [];
+    testimonials = contentData.testimonials || [];
+
+    // Populate hero
+    document.getElementById('c-tagline').value = contentData.tagline || '';
+    document.getElementById('c-headline').value = contentData.heroHeadline || '';
+    document.getElementById('c-subtext').value = contentData.heroSubtext || '';
+
+    // Populate contact
+    document.getElementById('c-email').value = contentData.contactEmail || '';
+    document.getElementById('c-phone').value = contentData.contactPhone || '';
+    document.getElementById('c-address').value = contentData.contactAddress || '';
+    document.getElementById('c-twitter').value = contentData.socialLinks?.twitter || '';
+    document.getElementById('c-linkedin').value = contentData.socialLinks?.linkedin || '';
+    document.getElementById('c-youtube').value = contentData.socialLinks?.youtube || '';
+
+    renderFAQs(); renderTestimonials();
+  } catch(e) { showToast('Failed to load content', 'error'); }
+}
+
+async function saveContent(section) {
+  const msg = document.getElementById('save-msg');
+  let payload = {};
+  if (section === 'hero') {
+    payload = { tagline: document.getElementById('c-tagline').value, heroHeadline: document.getElementById('c-headline').value, heroSubtext: document.getElementById('c-subtext').value };
+  } else if (section === 'contact') {
+    payload = {
+      contactEmail: document.getElementById('c-email').value,
+      contactPhone: document.getElementById('c-phone').value,
+      contactAddress: document.getElementById('c-address').value,
+      socialLinks: { twitter: document.getElementById('c-twitter').value, linkedin: document.getElementById('c-linkedin').value, youtube: document.getElementById('c-youtube').value }
+    };
+  }
+  try {
+    await AdminAuth.post('/admin/content-update', payload);
+    msg.textContent = '✅ Content updated! Changes are now live on the website.';
+    msg.className = 'alert alert-success'; msg.style.display = 'block';
+    setTimeout(() => msg.style.display = 'none', 3000);
+  } catch(e) { msg.textContent = e.message; msg.className = 'alert alert-error'; msg.style.display = 'block'; }
+}
+
+function renderFAQs() {
+  document.getElementById('faq-list').innerHTML = faqs.map((f,i) => `
+    <div style="padding:1rem;background:rgba(255,255,255,0.02);border:1px solid var(--card-border);border-radius:8px;margin-bottom:0.75rem">
+      <div class="form-group"><label class="form-label">Question</label><input type="text" class="form-input faq-q" value="${f.question||''}" data-idx="${i}"></div>
+      <div class="form-group" style="margin-bottom:0"><label class="form-label">Answer</label><textarea class="form-input faq-a" rows="2" data-idx="${i}">${f.answer||''}</textarea></div>
+      <button onclick="removeFAQ(${i})" style="background:none;border:none;color:var(--danger);cursor:pointer;font-size:0.8rem;margin-top:0.5rem">✕ Remove</button>
+    </div>`).join('') || '<p style="color:var(--text-muted);font-size:0.85rem">No FAQs yet. Add one!</p>';
+}
+
+function addFAQ() { faqs.push({ question:'', answer:'' }); renderFAQs(); }
+function removeFAQ(i) { faqs.splice(i,1); renderFAQs(); }
+
+async function saveFAQs() {
+  const qs = document.querySelectorAll('.faq-q');
+  const as = document.querySelectorAll('.faq-a');
+  const newFaqs = Array.from(qs).map((q,i) => ({ question: q.value, answer: as[i].value })).filter(f => f.question);
+  try {
+    await AdminAuth.post('/admin/content-update', { faqs: newFaqs });
+    showToast('FAQs saved!', 'success'); faqs = newFaqs;
+  } catch(e) { showToast(e.message, 'error'); }
+}
+
+function renderTestimonials() {
+  document.getElementById('testimonials-list').innerHTML = testimonials.map((t,i) => `
+    <div style="padding:1rem;background:rgba(255,255,255,0.02);border:1px solid var(--card-border);border-radius:8px;margin-bottom:0.75rem">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem">
+        <div class="form-group"><label class="form-label">Name</label><input type="text" class="form-input t-name" value="${t.name||''}" data-idx="${i}"></div>
+        <div class="form-group"><label class="form-label">Company</label><input type="text" class="form-input t-co" value="${t.company||''}" data-idx="${i}"></div>
+      </div>
+      <div class="form-group" style="margin-bottom:0"><label class="form-label">Testimonial</label><textarea class="form-input t-text" rows="2" data-idx="${i}">${t.text||''}</textarea></div>
+      <button onclick="removeTestimonial(${i})" style="background:none;border:none;color:var(--danger);cursor:pointer;font-size:0.8rem;margin-top:0.5rem">✕ Remove</button>
+    </div>`).join('') || '<p style="color:var(--text-muted);font-size:0.85rem">No testimonials yet.</p>';
+}
+
+function addTestimonial() { testimonials.push({ name:'', company:'', text:'', rating:5 }); renderTestimonials(); }
+function removeTestimonial(i) { testimonials.splice(i,1); renderTestimonials(); }
+
+async function saveTestimonials() {
+  const names = document.querySelectorAll('.t-name');
+  const cos = document.querySelectorAll('.t-co');
+  const texts = document.querySelectorAll('.t-text');
+  const newT = Array.from(names).map((_,i) => ({ name:names[i].value, company:cos[i].value, text:texts[i].value, rating:5 })).filter(t => t.name);
+  try {
+    await AdminAuth.post('/admin/content-update', { testimonials: newT });
+    showToast('Testimonials saved!', 'success'); testimonials = newT;
+  } catch(e) { showToast(e.message, 'error'); }
+}
+
+async function addBlogPost() {
+  const title = document.getElementById('blog-title').value;
+  if (!title) { showToast('Title is required', 'error'); return; }
+  try {
+    await AdminAuth.post('/admin/blog', {
+      title, category: document.getElementById('blog-cat').value,
+      excerpt: document.getElementById('blog-excerpt').value,
+      content: document.getElementById('blog-content').value
+    });
+    showToast('Blog post published!', 'success');
+    document.getElementById('blog-title').value=''; document.getElementById('blog-excerpt').value=''; document.getElementById('blog-content').value='';
+  } catch(e) { showToast(e.message, 'error'); }
+}
+
+loadContent();
+</script>
+</body>
+</html>

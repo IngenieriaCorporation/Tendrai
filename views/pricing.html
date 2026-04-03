@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pricing — TendRAI</title>
+<link rel="stylesheet" href="/css/style.css">
+<style>
+.pricing-hero { padding:8rem 2rem 4rem; text-align:center; background:radial-gradient(ellipse at center,rgba(99,102,241,0.08) 0%,transparent 70%); }
+.pricing-card { padding:2.5rem; position:relative; overflow:hidden; transition:all 0.3s; }
+.pricing-card.highlighted { border-color:var(--accent); background:rgba(34,211,238,0.04); transform:scale(1.04); }
+.pricing-card.highlighted::before { content:'MOST POPULAR'; position:absolute; top:1rem;right:1rem; font-size:0.68rem;font-weight:700;color:var(--accent);background:rgba(34,211,238,0.1);padding:0.25rem 0.6rem;border-radius:4px; }
+.price-amount { font-family:'Syne',sans-serif;font-size:3rem;font-weight:800;line-height:1; }
+.price-period { color:var(--text-muted);font-size:0.9rem;margin-left:0.3rem; }
+.price-features { list-style:none;margin:2rem 0; }
+.price-features li { display:flex;align-items:center;gap:0.6rem;padding:0.5rem 0;font-size:0.9rem;border-bottom:1px solid rgba(255,255,255,0.04); }
+.price-features li::before { content:'✓';color:var(--accent);font-weight:700;flex-shrink:0; }
+.compare-table { width:100%;border-collapse:collapse;margin-top:4rem; }
+.compare-table th { background:rgba(255,255,255,0.03);padding:1rem;text-align:center;font-family:'Syne',sans-serif;font-weight:700; }
+.compare-table th:first-child { text-align:left; }
+.compare-table td { padding:0.9rem 1rem;border-bottom:1px solid rgba(255,255,255,0.04);text-align:center;font-size:0.88rem; }
+.compare-table td:first-child { text-align:left;color:var(--text-muted); }
+.check { color:var(--success);font-size:1.1rem; }
+.cross { color:var(--danger);opacity:0.4; }
+</style>
+</head>
+<body>
+<nav class="navbar"><a href="/" class="navbar-brand"><div class="brand-logo">T</div><span class="brand-name">Tend<span>RAI</span></span></a>
+<ul class="nav-links"><li><a href="/features">Features</a></li><li><a href="/pricing" style="color:white">Pricing</a></li><li><a href="/how-it-works">How It Works</a></li><li><a href="/about">About</a></li></ul>
+<div class="nav-cta"><a href="/login" class="btn btn-ghost">Login</a><a href="/register" class="btn btn-primary">Start Free Trial</a></div></nav>
+
+<section class="pricing-hero">
+  <div class="badge badge-secondary" style="margin-bottom:1rem">Pricing</div>
+  <h1 class="section-title">Simple, <span class="gradient-text">Transparent Pricing</span></h1>
+  <p style="color:var(--text-muted);max-width:500px;margin:1rem auto;font-size:1.05rem">Start free. Upgrade when you're ready. All plans include a 14-day free trial.</p>
+</section>
+
+<section class="section" style="padding-top:2rem">
+  <div class="container">
+    <div id="plans-container" class="grid-3" style="align-items:start">
+      <div style="text-align:center;padding:3rem;color:var(--text-muted)">Loading pricing...</div>
+    </div>
+    <p style="text-align:center;margin-top:1.5rem;color:var(--text-muted);font-size:0.85rem">All plans include 14-day free trial • No credit card required • Cancel anytime • GST applicable</p>
+
+    <!-- Compare Table -->
+    <div style="margin-top:5rem">
+      <h2 style="text-align:center;font-size:2rem;font-weight:800;margin-bottom:0.5rem">Compare <span class="gradient-text">All Features</span></h2>
+      <p style="text-align:center;color:var(--text-muted);margin-bottom:2rem">See exactly what's included in each plan</p>
+      <div class="table-wrapper glass-card" style="padding:0;border-radius:16px;overflow:hidden">
+        <table class="compare-table">
+          <thead><tr><th>Feature</th><th>Starter<br><span style="font-weight:400;font-size:0.82rem">₹999/mo</span></th><th>Professional<br><span style="font-weight:400;font-size:0.82rem">₹2,999/mo</span></th><th>Enterprise<br><span style="font-weight:400;font-size:0.82rem">Custom</span></th></tr></thead>
+          <tbody>
+            <tr><td>Active Tenders</td><td>5</td><td>Unlimited</td><td>Unlimited</td></tr>
+            <tr><td>AI Document Analysis</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td></tr>
+            <tr><td>Deadline Tracker</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td></tr>
+            <tr><td>Document Storage</td><td>10 GB</td><td>100 GB</td><td>Unlimited</td></tr>
+            <tr><td>Compliance Checker</td><td class="cross">✗</td><td class="check">✓</td><td class="check">✓</td></tr>
+            <tr><td>Team Members</td><td>1</td><td>5</td><td>Unlimited</td></tr>
+            <tr><td>API Access</td><td class="cross">✗</td><td class="check">✓</td><td class="check">✓</td></tr>
+            <tr><td>Advanced Analytics</td><td class="cross">✗</td><td class="check">✓</td><td class="check">✓</td></tr>
+            <tr><td>Custom AI Training</td><td class="cross">✗</td><td class="cross">✗</td><td class="check">✓</td></tr>
+            <tr><td>Dedicated Account Manager</td><td class="cross">✗</td><td class="cross">✗</td><td class="check">✓</td></tr>
+            <tr><td>Support</td><td>Email</td><td>Priority Email</td><td>24/7 Phone</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- FAQ -->
+    <div style="margin-top:5rem;max-width:700px;margin-left:auto;margin-right:auto">
+      <h2 style="text-align:center;font-size:2rem;font-weight:800;margin-bottom:2rem">Pricing <span class="gradient-text">FAQs</span></h2>
+      <div class="faq-item"><div class="faq-question">Can I change plans anytime? <span class="faq-toggle">+</span></div><div class="faq-answer">Yes! You can upgrade or downgrade your plan at any time. Changes take effect from your next billing cycle.</div></div>
+      <div class="faq-item"><div class="faq-question">Is there a free trial? <span class="faq-toggle">+</span></div><div class="faq-answer">Yes! All plans come with a 14-day free trial. No credit card required to start.</div></div>
+      <div class="faq-item"><div class="faq-question">What payment methods are accepted? <span class="faq-toggle">+</span></div><div class="faq-answer">We accept UPI, Net Banking, Credit/Debit Cards, and NEFT/RTGS for annual plans.</div></div>
+      <div class="faq-item"><div class="faq-question">Do you offer annual billing discounts? <span class="faq-toggle">+</span></div><div class="faq-answer">Yes! Save 20% when you pay annually. Contact sales for annual billing options.</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="cta-section" style="padding:5rem 2rem;text-align:center">
+  <h2 class="section-title" style="margin-bottom:1rem">Start Winning More <span class="gradient-text">Tenders Today</span></h2>
+  <p style="color:var(--text-muted);margin-bottom:2rem">Join 500+ contractors using TendRAI to streamline their bidding.</p>
+  <a href="/register" class="btn btn-primary btn-lg">Start Free 14-Day Trial</a>
+</section>
+
+<footer style="text-align:center;padding:2rem;border-top:1px solid var(--card-border);color:var(--text-muted);font-size:0.85rem">
+  <a href="/" style="color:var(--accent);text-decoration:none">← Back to Home</a> &nbsp;|&nbsp; © 2024 TendRAI. All rights reserved.
+</footer>
+
+<script src="/js/app.js"></script>
+<script>
+document.querySelectorAll('.faq-question').forEach(q => {
+  q.addEventListener('click', () => q.closest('.faq-item').classList.toggle('open'));
+});
+
+async function loadPricing() {
+  try {
+    const data = await fetch('/api/admin/pricing').then(r => r.json());
+    const container = document.getElementById('plans-container');
+    container.innerHTML = data.plans.map(p => `
+      <div class="glass-card pricing-card ${p.highlighted ? 'highlighted' : ''} animate-on-scroll">
+        <div class="badge ${p.highlighted?'badge-accent':'badge-secondary'}" style="margin-bottom:1rem">${p.name}</div>
+        <div style="margin:1.2rem 0">
+          ${p.isCustom ? '<span class="price-amount" style="font-size:2rem">Custom</span>' : `<span class="price-amount">${p.currency}${p.price.toLocaleString('en-IN')}</span><span class="price-period">/${p.period}</span>`}
+        </div>
+        <ul class="price-features">${p.features.map(f => `<li>${f}</li>`).join('')}</ul>
+        ${p.isCustom
+          ? `<a href="/contact" class="btn btn-outline" style="width:100%;justify-content:center">Contact Sales</a>`
+          : `<a href="/register" class="btn ${p.highlighted?'btn-primary':'btn-outline'}" style="width:100%;justify-content:center">Start Free Trial</a>`
+        }
+      </div>`).join('');
+  } catch(e) { console.error(e); }
+}
+loadPricing();
+</script>
+</body>
+</html>

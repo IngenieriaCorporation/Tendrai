@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blog & Resources — TendRAI</title>
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<nav class="navbar"><a href="/" class="navbar-brand"><div class="brand-logo">T</div><span class="brand-name">Tend<span>RAI</span></span></a>
+<ul class="nav-links"><li><a href="/features">Features</a></li><li><a href="/pricing">Pricing</a></li><li><a href="/blog" style="color:white">Resources</a></li></ul>
+<div class="nav-cta"><a href="/login" class="btn btn-ghost">Login</a><a href="/register" class="btn btn-primary">Start Free</a></div></nav>
+
+<section style="padding:8rem 2rem 4rem;text-align:center">
+  <div class="badge badge-accent" style="margin-bottom:1rem">Resources</div>
+  <h1 class="section-title">Blog & <span class="gradient-text">Resources</span></h1>
+  <p style="color:var(--text-muted);max-width:520px;margin:1rem auto">Tips, guides, and insights for winning government tenders in India.</p>
+</section>
+
+<section class="section" style="padding-top:2rem">
+  <div class="container">
+    <div id="blog-list" class="grid-3"></div>
+  </div>
+</section>
+
+<footer style="text-align:center;padding:2rem;border-top:1px solid var(--card-border);color:var(--text-muted);font-size:0.85rem">
+  <a href="/" style="color:var(--accent);text-decoration:none">← Back to Home</a> &nbsp;|&nbsp; © 2024 TendRAI
+</footer>
+<script src="/js/app.js"></script>
+<script>
+const defaultPosts = [
+  { title: '10 Most Common Reasons Tenders Get Rejected in India', excerpt: 'Avoid these costly mistakes that disqualify even the most qualified contractors from government bids.', category: 'Tips & Tricks', date: 'Jan 15, 2024' },
+  { title: 'Complete Guide to GeM Portal Registration in 2024', excerpt: 'Step-by-step walkthrough of registering your business on the Government e-Marketplace.', category: 'Guide', date: 'Jan 22, 2024' },
+  { title: 'How to Calculate EMD and Performance Security for Government Tenders', excerpt: 'Understanding the financial requirements for bid security deposits in Indian government tenders.', category: 'Finance', date: 'Feb 3, 2024' },
+  { title: 'MSME Benefits in Government Procurement: Complete 2024 Guide', excerpt: 'Exclusive benefits, exemptions, and price preferences available to registered MSMEs in tenders.', category: 'MSME', date: 'Feb 10, 2024' },
+  { title: 'Technical Bid vs Financial Bid: What Every Contractor Must Know', excerpt: 'Understanding the two-envelope system and how to prepare a winning technical bid document.', category: 'Strategy', date: 'Feb 18, 2024' },
+  { title: 'Top 5 Government Portals for Finding Tenders in India', excerpt: 'From GeM to CPPP to state eProcurement portals — here\'s where to find the best opportunities.', category: 'Resources', date: 'Mar 1, 2024' },
+];
+async function loadBlog() {
+  let posts = defaultPosts;
+  try {
+    const data = await fetch('/api/admin/content').then(r => r.json());
+    if (data.content?.blogPosts?.length > 0) posts = [...data.content.blogPosts, ...defaultPosts];
+  } catch(e) {}
+  document.getElementById('blog-list').innerHTML = posts.map(p => `
+    <div class="glass-card" style="padding:1.8rem;cursor:pointer" onclick="void(0)">
+      <span class="badge badge-secondary" style="margin-bottom:1rem">${p.category}</span>
+      <h3 style="font-size:1.05rem;font-weight:700;margin-bottom:0.6rem;line-height:1.4">${p.title}</h3>
+      <p style="color:var(--text-muted);font-size:0.85rem;line-height:1.6;margin-bottom:1rem">${p.excerpt}</p>
+      <div style="color:var(--text-muted);font-size:0.78rem">${p.date || 'Recent'}</div>
+    </div>`).join('');
+}
+loadBlog();
+</script>
+</body>
+</html>

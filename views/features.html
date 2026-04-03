@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Features — TendRAI</title>
+<link rel="stylesheet" href="/css/style.css">
+<style>
+.features-hero{padding:8rem 2rem 4rem;text-align:center;background:radial-gradient(ellipse at center,rgba(34,211,238,0.07) 0%,transparent 70%)}
+.feature-big{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center;padding:4rem 0;border-bottom:1px solid var(--card-border)}
+.feature-big:last-child{border:none}
+.feature-big.reverse{direction:rtl}
+.feature-big.reverse>*{direction:ltr}
+.feature-num{font-family:'Syne',sans-serif;font-size:5rem;font-weight:800;opacity:0.08;line-height:1;margin-bottom:-1rem}
+.feature-tag{display:inline-block;padding:0.3rem 0.8rem;border-radius:6px;font-size:0.78rem;font-weight:600;background:rgba(34,211,238,0.1);color:var(--accent);margin-bottom:1rem}
+.feature-visual{background:rgba(30,41,59,0.8);border:1px solid var(--card-border);border-radius:16px;padding:2rem;min-height:280px;display:flex;flex-direction:column;justify-content:center}
+@media(max-width:768px){.feature-big{grid-template-columns:1fr}.feature-big.reverse{direction:ltr}}
+</style>
+</head>
+<body>
+<nav class="navbar"><a href="/" class="navbar-brand"><div class="brand-logo">T</div><span class="brand-name">Tend<span>RAI</span></span></a>
+<ul class="nav-links"><li><a href="/features" style="color:white">Features</a></li><li><a href="/pricing">Pricing</a></li><li><a href="/how-it-works">How It Works</a></li><li><a href="/about">About</a></li></ul>
+<div class="nav-cta"><a href="/login" class="btn btn-ghost">Login</a><a href="/register" class="btn btn-primary">Start Free Trial</a></div></nav>
+
+<section class="features-hero">
+  <div class="badge badge-accent" style="margin-bottom:1rem">Platform Features</div>
+  <h1 class="section-title">Every Tool You Need to <span class="gradient-text">Win Tenders</span></h1>
+  <p style="color:var(--text-muted);max-width:560px;margin:1rem auto;font-size:1.05rem">TendRAI combines AI intelligence with practical bid management tools — purpose-built for Indian government procurement.</p>
+</section>
+
+<section class="section" style="padding-top:2rem">
+  <div class="container">
+    <div class="feature-big animate-on-scroll">
+      <div>
+        <div class="feature-num">01</div>
+        <div class="feature-tag">🤖 AI Powered</div>
+        <h2 style="font-size:2rem;font-weight:800;margin-bottom:1rem">AI Tender Document Analysis</h2>
+        <p style="color:var(--text-muted);line-height:1.7;margin-bottom:1.5rem">Upload any tender PDF or document and our AI instantly extracts every requirement, eligibility criterion, financial threshold, and compliance need. What takes hours manually takes seconds with TendRAI.</p>
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:0.6rem">
+          <li style="display:flex;gap:0.5rem;font-size:0.9rem"><span style="color:var(--accent)">✓</span> Automatic requirement extraction</li>
+          <li style="display:flex;gap:0.5rem;font-size:0.9rem"><span style="color:var(--accent)">✓</span> Eligibility criteria analysis</li>
+          <li style="display:flex;gap:0.5rem;font-size:0.9rem"><span style="color:var(--accent)">✓</span> Document checklist generation</li>
+          <li style="display:flex;gap:0.5rem;font-size:0.9rem"><span style="color:var(--accent)">✓</span> Bid strategy recommendations</li>
+        </ul>
+      </div>
+      <div class="feature-visual">
+        <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1.5rem;padding-bottom:1rem;border-bottom:1px solid var(--card-border)">
+          <span style="font-size:2rem">🤖</span><div><div style="font-weight:700">AI Analysis Report</div><div style="font-size:0.78rem;color:var(--text-muted)">NHAI Road Project #A2024</div></div>
+          <div style="margin-left:auto;text-align:right"><div style="font-size:1.8rem;font-weight:800;color:var(--accent)">94%</div><div style="font-size:0.7rem;color:var(--text-muted)">Compliance</div></div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:0.5rem">
+          <div style="display:flex;align-items:center;gap:0.5rem;font-size:0.82rem"><span style="color:var(--success)">✓</span>Company Registration — Found</div>
+          <div style="display:flex;align-items:center;gap:0.5rem;font-size:0.82rem"><span style="color:var(--success)">✓</span>GST Certificate — Found</div>
+          <div style="display:flex;align-items:center;gap:0.5rem;font-size:0.82rem"><span style="color:var(--warning)">⚠</span>Bank Solvency Letter — Missing</div>
+          <div style="display:flex;align-items:center;gap:0.5rem;font-size:0.82rem"><span style="color:var(--success)">✓</span>EMD Document — Found</div>
+          <div style="display:flex;align-items:center;gap:0.5rem;font-size:0.82rem"><span style="color:var(--success)">✓</span>Technical Specifications — Found</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="feature-big reverse animate-on-scroll">
+      <div>
+        <div class="feature-num">02</div>
+        <div class="feature-tag">⏰ Never Miss</div>
+        <h2 style="font-size:2rem;font-weight:800;margin-bottom:1rem">Smart Deadline Tracker</h2>
+        <p style="color:var(--text-muted);line-height:1.7;margin-bottom:1.5rem">Intelligent deadline management with multi-level alerts. Get notified 7 days, 3 days, 1 day before every tender submission deadline. Never lose a ₹crore opportunity to a missed deadline again.</p>
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:0.6rem">
+          <li style="display:flex;gap:0.5rem;font-size:0.9rem"><span style="color:var(--accent)">✓</span> Smart email & SMS reminders</li>
+          <li style="display:flex;gap:0.5rem;font-size:0.9rem"><span style="color:var(--accent)">✓</span> Deadline calendar view</li>
+          <li style="display:flex;gap:0.5rem;font-size:0.9rem"><span style="color:var(--accent)">✓</span> Urgency-based prioritization</li>
+        </ul>
+      </div>
+      <div class="feature-visual">
+        <div style="font-weight:700;margin-bottom:1rem">Upcoming Deadlines</div>
+        <div style="display:flex;flex-direction:column;gap:0.75rem">
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:0.75rem;background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2);border-radius:8px">
+            <div><div style="font-size:0.85rem;font-weight:600">PWD Road Tender</div><div style="font-size:0.75rem;color:var(--text-muted)">March 15, 2024</div></div>
+            <span class="badge badge-danger">2 days</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:0.75rem;background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.2);border-radius:8px">
+            <div><div style="font-size:0.85rem;font-weight:600">GeM IT Supply</div><div style="font-size:0.75rem;color:var(--text-muted)">March 18, 2024</div></div>
+            <span class="badge badge-warning">5 days</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:0.75rem;background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.2);border-radius:8px">
+            <div><div style="font-size:0.85rem;font-weight:600">Railway Catering</div><div style="font-size:0.75rem;color:var(--text-muted)">March 28, 2024</div></div>
+            <span class="badge badge-success">15 days</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="feature-big animate-on-scroll">
+      <div>
+        <div class="feature-num">03</div>
+        <div class="feature-tag">✅ Compliance</div>
+        <h2 style="font-size:2rem;font-weight:800;margin-bottom:1rem">Automated Compliance Checker</h2>
+        <p style="color:var(--text-muted);line-height:1.7;margin-bottom:1.5rem">Automatically verify your bid documents against GeM, CPPP, and 50+ portal requirements. Catch errors before submission — not after rejection.</p>
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:0.6rem">
+          <li style="display:flex;gap:0.5rem;font-size:0.9rem"><span style="color:var(--accent)">✓</span> 200+ compliance rules</li>
+          <li style="display:flex;gap:0.5rem;font-size:0.9rem"><span style="color:var(--accent)">✓</span> Real-time validation</li>
+          <li style="display:flex;gap:0.5rem;font-size:0.9rem"><span style="color:var(--accent)">✓</span> Portal-specific checks</li>
+        </ul>
+      </div>
+      <div class="feature-visual">
+        <div style="font-weight:700;margin-bottom:1rem">Compliance Report</div>
+        <div style="height:8px;background:rgba(255,255,255,0.06);border-radius:4px;margin-bottom:0.5rem;overflow:hidden"><div style="width:87%;height:100%;background:linear-gradient(90deg,var(--accent),var(--secondary));border-radius:4px"></div></div>
+        <div style="display:flex;justify-content:space-between;font-size:0.75rem;color:var(--text-muted);margin-bottom:1.5rem"><span>Overall Score</span><span style="color:var(--accent)">87/100</span></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem">
+          <div style="padding:0.6rem;background:rgba(16,185,129,0.08);border-radius:6px;font-size:0.75rem;color:var(--success)">✓ Technical Bid</div>
+          <div style="padding:0.6rem;background:rgba(16,185,129,0.08);border-radius:6px;font-size:0.75rem;color:var(--success)">✓ Financial Bid</div>
+          <div style="padding:0.6rem;background:rgba(245,158,11,0.08);border-radius:6px;font-size:0.75rem;color:var(--warning)">⚠ PAN Verification</div>
+          <div style="padding:0.6rem;background:rgba(16,185,129,0.08);border-radius:6px;font-size:0.75rem;color:var(--success)">✓ GST Documents</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cta-section" style="padding:5rem 2rem;text-align:center;background:radial-gradient(ellipse at center,rgba(99,102,241,0.08) 0%,transparent 70%)">
+  <h2 class="section-title" style="margin-bottom:1rem">Ready to Explore <span class="gradient-text">All Features?</span></h2>
+  <a href="/register" class="btn btn-primary btn-lg" style="margin-top:1rem">Start Free Trial</a>
+</section>
+
+<footer style="text-align:center;padding:2rem;border-top:1px solid var(--card-border);color:var(--text-muted);font-size:0.85rem">
+  <a href="/" style="color:var(--accent);text-decoration:none">← Back to Home</a> &nbsp;|&nbsp; © 2024 TendRAI
+</footer>
+<script src="/js/app.js"></script>
+</body>
+</html>
