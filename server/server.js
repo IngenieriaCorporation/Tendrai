@@ -1,15 +1,10 @@
 const express = require('express');
 const path = require('path');
-
 const app = express();
 
 // ================= MIDDLEWARE =================
-
-// Parse JSON & form data
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
-// Serve static files (CSS, JS, images)
 app.use(express.static(path.join(__dirname, '../public')));
 
 // ================= USER PAGES =================
@@ -20,7 +15,6 @@ const pages = {
   '/blog': 'blog.html',
   '/industries': 'industries.html'
 };
-
 Object.entries(pages).forEach(([route, file]) => {
   app.get(route, (req, res) => {
     res.sendFile(path.join(__dirname, '../views', file));
@@ -36,7 +30,6 @@ const adminPages = {
   '/admin/content': 'admin-content.html',
   '/admin/login': 'admin-login.html'
 };
-
 Object.entries(adminPages).forEach(([route, file]) => {
   app.get(route, (req, res) => {
     res.sendFile(path.join(__dirname, '../admin', file));
@@ -45,7 +38,7 @@ Object.entries(adminPages).forEach(([route, file]) => {
 
 // ================= ROOT ROUTE =================
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, '../views', 'index.html'));
+  res.sendFile(path.join(__dirname, '../views', 'home.html')); // ✅ was index.html
 });
 
 // ================= HEALTH CHECK (FOR RENDER) =================
@@ -69,9 +62,12 @@ app.use((req, res) => {
 
 // ================= SERVER START =================
 const PORT = process.env.PORT || 10000;
-
 app.listen(PORT, () => {
   console.log(`🚀 TendRAI Server running on port ${PORT}`);
+});
+
+// ================= EXPORT =================
+module.exports = app;
 });
 
 // ================= EXPORT =================
