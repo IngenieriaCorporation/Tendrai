@@ -3,10 +3,16 @@ const path = require('path');
 
 const app = express();
 
-// Serve static files (IMPORTANT)
+// ================= MIDDLEWARE =================
+
+// Parse JSON & form data
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Serve static files (CSS, JS, images)
 app.use(express.static(path.join(__dirname, '../public')));
 
-// ------------------ USER PAGES ------------------
+// ================= USER PAGES =================
 const pages = {
   '/login': 'login.html',
   '/register': 'register.html',
@@ -21,7 +27,7 @@ Object.entries(pages).forEach(([route, file]) => {
   });
 });
 
-// ------------------ ADMIN PAGES ------------------
+// ================= ADMIN PAGES =================
 const adminPages = {
   '/admin': 'admin-dashboard.html',
   '/admin/users': 'admin-users.html',
@@ -37,12 +43,17 @@ Object.entries(adminPages).forEach(([route, file]) => {
   });
 });
 
-// ------------------ ROOT ROUTE (IMPORTANT) ------------------
+// ================= ROOT ROUTE =================
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '../views', 'index.html'));
 });
 
-// ------------------ ERROR HANDLER ------------------
+// ================= HEALTH CHECK (FOR RENDER) =================
+app.get('/health', (req, res) => {
+  res.status(200).send('OK');
+});
+
+// ================= ERROR HANDLER =================
 app.use((err, req, res, next) => {
   console.error("❌ ERROR:", err.stack);
   res.status(500).json({
@@ -51,16 +62,17 @@ app.use((err, req, res, next) => {
   });
 });
 
-// ------------------ PORT FIX (RENDER CRITICAL) ------------------
+// ================= 404 HANDLER =================
+app.use((req, res) => {
+  res.status(404).send('404 - Page Not Found');
+});
+
+// ================= SERVER START =================
 const PORT = process.env.PORT || 10000;
 
 app.listen(PORT, () => {
-  console.log(`🚀 TendRAI Server running`);
-  console.log(`🌐 Live URL: https://tendrai-wk0c.onrender.com`);
+  console.log(`🚀 TendRAI Server running on port ${PORT}`);
 });
 
-module.exports = app;
-  console.log(`🌐 Website: http://localhost:${PORT}\n`);
-});
-
+// ================= EXPORT =================
 module.exports = app;
