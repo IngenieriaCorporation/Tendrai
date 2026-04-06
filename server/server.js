@@ -1,5 +1,6 @@
 const express = require('express');
 const path = require('path');
+
 const app = express();
 
 // ================= MIDDLEWARE =================
@@ -9,12 +10,13 @@ app.use(express.static(path.join(__dirname, '../public')));
 
 // ================= USER PAGES =================
 const pages = {
-  '/login': 'login.html',
-  '/register': 'register.html',
-  '/dashboard': 'dashboard.html',
-  '/blog': 'blog.html',
+  '/login':      'login.html',
+  '/register':   'register.html',
+  '/dashboard':  'dashboard.html',
+  '/blog':       'blog.html',
   '/industries': 'industries.html'
 };
+
 Object.entries(pages).forEach(([route, file]) => {
   app.get(route, (req, res) => {
     res.sendFile(path.join(__dirname, '../views', file));
@@ -23,13 +25,14 @@ Object.entries(pages).forEach(([route, file]) => {
 
 // ================= ADMIN PAGES =================
 const adminPages = {
-  '/admin': 'admin-dashboard.html',
-  '/admin/users': 'admin-users.html',
-  '/admin/tenders': 'admin-tenders.html',
-  '/admin/pricing': 'admin-pricing.html',
-  '/admin/content': 'admin-content.html',
-  '/admin/login': 'admin-login.html'
+  '/admin':          'admin-dashboard.html',
+  '/admin/users':    'admin-users.html',
+  '/admin/tenders':  'admin-tenders.html',
+  '/admin/pricing':  'admin-pricing.html',
+  '/admin/content':  'admin-content.html',
+  '/admin/login':    'admin-login.html'
 };
+
 Object.entries(adminPages).forEach(([route, file]) => {
   app.get(route, (req, res) => {
     res.sendFile(path.join(__dirname, '../admin', file));
@@ -38,17 +41,17 @@ Object.entries(adminPages).forEach(([route, file]) => {
 
 // ================= ROOT ROUTE =================
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, '../views', 'home.html')); // ✅ was index.html
+  res.sendFile(path.join(__dirname, '../views', 'home.html'));
 });
 
-// ================= HEALTH CHECK (FOR RENDER) =================
+// ================= HEALTH CHECK =================
 app.get('/health', (req, res) => {
   res.status(200).send('OK');
 });
 
 // ================= ERROR HANDLER =================
 app.use((err, req, res, next) => {
-  console.error("❌ ERROR:", err.stack);
+  console.error('❌ ERROR:', err.stack);
   res.status(500).json({
     message: 'Something went wrong!',
     error: err.message
@@ -66,9 +69,4 @@ app.listen(PORT, () => {
   console.log(`🚀 TendRAI Server running on port ${PORT}`);
 });
 
-// ================= EXPORT =================
-module.exports = app;
-});
-
-// ================= EXPORT =================
 module.exports = app;
