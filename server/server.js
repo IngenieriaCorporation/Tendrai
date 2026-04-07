@@ -1,27 +1,34 @@
+require('dotenv').config();
 const express = require('express');
 const path = require('path');
+const cors = require('cors');
+const connectDB = require('../database/connection');
 
 const app = express();
 
-// ================= IMPORT ROUTES =================
-const authRoutes = require('./routes/auth');
-const dashboardRoutes = require('./routes/dashboard');
-const adminRoutes = require('./routes/admin');
+// Connect DB
+connectDB();
 
-// ================= MIDDLEWARE =================
+// Middleware
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
-// Serve static files (CSS, JS, images)
 app.use(express.static(path.join(__dirname, '../public')));
+app.use('/uploads', express.static(path.join(__dirname, '../public/uploads')));
 
-// ================= API ROUTES =================
-app.use('/api', authRoutes);
-app.use('/api', dashboardRoutes);
-app.use('/api/admin', adminRoutes);
+// Routes
+app.use('/api', require('./routes/auth'));
+app.use('/api', require('./routes/user'));
+app.use('/api/admin', require('./routes/admin'));
 
-// ================= USER PAGES =================
+// Serve HTML pages
 const pages = {
+  '/': 'home.html',
+  '/features': 'features.html',
+  '/pricing': 'pricing.html',
+  '/how-it-works': 'how-it-works.html',
+  '/about': 'about.html',
+  '/contact': 'contact.html',
   '/login': 'login.html',
   '/register': 'register.html',
   '/dashboard': 'dashboard.html',
@@ -30,12 +37,12 @@ const pages = {
 };
 
 Object.entries(pages).forEach(([route, file]) => {
-  app.get(route, (req, res) => {
-    res.sendFile(path.join(__dirname, '../views', file));
-  });
+  app.get(route, (req, res) =>
+    res.sendFile(path.join(__dirname, '../views', file))
+  );
 });
 
-// ================= ADMIN PAGES =================
+// Admin pages
 const adminPages = {
   '/admin': 'admin-dashboard.html',
   '/admin/users': 'admin-users.html',
@@ -46,40 +53,22 @@ const adminPages = {
 };
 
 Object.entries(adminPages).forEach(([route, file]) => {
-  app.get(route, (req, res) => {
-    res.sendFile(path.join(__dirname, '../admin', file));
-  });
+  app.get(route, (req, res) =>
+    res.sendFile(path.join(__dirname, '../admin', file))
+  );
 });
 
-// ================= ROOT =================
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, '../views', 'home.html'));
-});
-
-// ================= HEALTH =================
-app.get('/health', (req, res) => {
-  res.status(200).send('OK');
-});
-
-// ================= ERROR HANDLER =================
+// Error handler
 app.use((err, req, res, next) => {
-  console.error('❌ ERROR:', err.stack);
-  res.status(500).json({
-    message: 'Something went wrong!',
-    error: err.message
-  });
+  console.error(err.stack);
+  res.status(500).json({ message: 'Something went wrong!', error: err.message });
 });
 
-// ================= 404 =================
-app.use((req, res) => {
-  res.status(404).send('404 - Page Not Found');
-});
-
-// ================= SERVER START =================
-const PORT = process.env.PORT || 10000;
-
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`🚀 TendRAI Server running on port ${PORT}`);
+  console.log(`\n🚀 TendRAI Server running at http://localhost:${PORT}`);
+  console.log(`📊 Admin Panel: http://localhost:${PORT}/admin/login`);
+  console.log(`🌐 Website: http://localhost:${PORT}\n`);
 });
 
 module.exports = app;
