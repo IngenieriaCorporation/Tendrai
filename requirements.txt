@@ -4,3 +4,4 @@ pymongo[srv]
 openai
 python-multipart
 motor
+beanie
