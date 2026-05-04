@@ -1,0 +1,6 @@
+fastapi
+uvicorn[standard]
+pymongo[srv]
+openai
+python-multipart
+motor
