@@ -1,0 +1,36 @@
+services:
+  - type: web
+    name: tendrai-backend
+    runtime: python
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    plan: free
+    envVars:
+      - key: MONGODB_URL
+        sync: false          # Set manually in Render dashboard (contains password)
+      - key: MONGODB_DB_NAME
+        value: tendrai
+      - key: SECRET_KEY
+        generateValue: true  # Render auto-generates a secure random value
+      - key: ALGORITHM
+        value: HS256
+      - key: ACCESS_TOKEN_EXPIRE_MINUTES
+        value: "60"
+      - key: OPENAI_API_KEY
+        sync: false          # Set manually in Render dashboard
+      - key: UPLOAD_DIR
+        value: /app/uploads
+      - key: FRONTEND_URL
+        sync: false          # Set to your Vercel URL after deploying frontend
+      - key: SBI_MERCHANT_ID
+        sync: false
+      - key: SBI_ENCRYPTION_KEY
+        sync: false
+      - key: SBI_EPAY_URL
+        value: https://www.sbiepay.sbi/secure/AggregatorHostedListener
+    disk:
+      name: tendrai-uploads
+      mountPath: /app/uploads
+      sizeGB: 5
